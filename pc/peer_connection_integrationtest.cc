@@ -1923,6 +1923,10 @@ TEST_P(PeerConnectionIntegrationTest,
   EXPECT_EQ_WAIT(webrtc::PeerConnectionInterface::kIceConnectionConnected,
                  callee()->ice_connection_state(), kDefaultTimeout);
 
+  // Part of reporting the stats will occur on the network thread, so flush it
+  // before checking NumEvents.
+  network_thread()->Invoke<void>(RTC_FROM_HERE, [] {});
+
   EXPECT_METRIC_EQ(1, webrtc::metrics::NumEvents(
                           "WebRTC.PeerConnection.CandidatePairType_UDP",
                           webrtc::kIceCandidatePairHostNameHostName));
@@ -2151,6 +2155,10 @@ TEST_P(PeerConnectionIntegrationIceStatesTest, MAYBE_VerifyBestConnection) {
                  caller()->ice_connection_state(), kDefaultTimeout);
   EXPECT_EQ_WAIT(webrtc::PeerConnectionInterface::kIceConnectionConnected,
                  callee()->ice_connection_state(), kDefaultTimeout);
+
+  // Part of reporting the stats will occur on the network thread, so flush it
+  // before checking NumEvents.
+  network_thread()->Invoke<void>(RTC_FROM_HERE, [] {});
 
   // TODO(bugs.webrtc.org/9456): Fix it.
   const int num_best_ipv4 = webrtc::metrics::NumEvents(
@@ -3651,6 +3659,13 @@ TEST_P(PeerConnectionIntegrationTest, NewTracksDoNotCauseNewCandidates) {
   caller()->AddAudioTrack();
   caller()->CreateAndSetAndSignalOffer();
   ASSERT_TRUE_WAIT(SignalingStateStable(), kDefaultTimeout);
+}
+
+TEST_P(PeerConnectionIntegrationTest, MediaCallWithoutMediaEngineFails) {
+  ASSERT_TRUE(CreatePeerConnectionWrappersWithoutMediaEngine());
+  // AddTrack should fail.
+  EXPECT_FALSE(
+      caller()->pc()->AddTrack(caller()->CreateLocalAudioTrack(), {}).ok());
 }
 
 INSTANTIATE_TEST_SUITE_P(

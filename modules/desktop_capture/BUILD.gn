@@ -450,7 +450,19 @@ rtc_library("desktop_capture_generic") {
     ]
   }
 
-  if (!is_win && !is_mac && !rtc_use_x11_extensions && !rtc_use_pipewire) {
+  if (is_ohos) {
+    sources += [
+      "mouse_cursor_monitor_null.cc",
+      "screen_capturer_ohos.cc",
+      "window_capturer_ohos.cc",
+      "ohos/base_window_capturer.cc",
+      "ohos/base_window_capturer.h",
+    ]
+    include_dirs = ohos_src_includes
+    libs = [ "nweb_ohos_adapter.z" ]
+  }
+
+  if (!is_ohos && !is_win && !is_mac && !rtc_use_x11_extensions && !rtc_use_pipewire) {
     sources += [
       "mouse_cursor_monitor_null.cc",
       "screen_capturer_null.cc",

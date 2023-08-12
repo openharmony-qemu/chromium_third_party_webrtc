@@ -425,6 +425,8 @@ class PeerConnection : public PeerConnectionInternal,
   // Returns rtp transport, result can not be nullptr.
   RtpTransportInternal* GetRtpTransport(const std::string& mid);
 
+  bool ConfiguredForMedia() const;
+
   // Returns true if SRTP (either using DTLS-SRTP or SDES) is required by
   // this session.
   bool SrtpRequired() const;
@@ -567,7 +569,8 @@ class PeerConnection : public PeerConnectionInternal,
 
   // Invoked when TransportController connection completion is signaled.
   // Reports stats for all transports in use.
-  void ReportTransportStats() RTC_RUN_ON(network_thread());
+  void ReportTransportStats(std::vector<RtpTransceiverProxyRefPtr> transceivers)
+      RTC_RUN_ON(network_thread());
 
   // Gather the usage of IPv4/IPv6 as best connection.
   static void ReportBestConnectionState(const cricket::TransportStats& stats);
