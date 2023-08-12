@@ -170,7 +170,7 @@ rtc_library("rtc_base_approved") {
         [ "//native_client_sdk/src/libraries/nacl_io" ]
   }
 
-  if (is_android) {
+  if (is_android || (is_ohos && !use_musl)) {
     libs = [ "log" ]
   }
 
@@ -324,7 +324,7 @@ rtc_library("logging") {
       frameworks = [ "Foundation.framework" ]
     }
 
-    if (is_android) {
+    if (is_android || (is_ohos && !use_musl)) {
       libs += [ "log" ]
     }
   }
@@ -351,7 +351,7 @@ rtc_library("checks") {
     "//third_party/abseil-cpp/absl/meta:type_traits",
     "//third_party/abseil-cpp/absl/strings",
   ]
-  if (is_android) {
+  if (is_android || (is_ohos && !use_musl)) {
     libs += [ "log" ]
   }
 }
@@ -685,7 +685,7 @@ rtc_library("net_helpers") {
     "net_helpers.h",
   ]
   deps = []
-  if (is_android) {
+  if (is_android || is_ohos) {
     deps += [ ":ifaddrs_android" ]
   }
   if (is_win) {
@@ -823,7 +823,7 @@ rtc_library("threading") {
     "task_utils:to_queued_task",
     "third_party/sigslot",
   ]
-  if (is_android) {
+  if (is_android || is_ohos) {
     deps += [ ":ifaddrs_android" ]
   }
   if (is_win) {
@@ -876,16 +876,18 @@ rtc_source_set("network_constants") {
   deps = [ ":checks" ]
 }
 
-if (is_android) {
+if (is_android || is_ohos) {
   rtc_library("ifaddrs_android") {
     sources = [
       "ifaddrs_android.cc",
       "ifaddrs_android.h",
     ]
-    libs = [
-      "log",
-      "GLESv2",
-    ]
+    if (!use_musl) {
+      libs = [
+        "log",
+        # "GLESv2",
+      ]
+    }
   }
 }
 
@@ -1076,7 +1078,7 @@ rtc_library("rtc_base") {
     configs += [ ":external_ssl_library" ]
   }
 
-  if (is_android) {
+  if (is_android || is_ohos) {
     deps += [ ":ifaddrs_android" ]
   }
 
