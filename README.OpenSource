@@ -1,0 +1,10 @@
+[
+    {
+        "Name": "chromium_third_party_webrtc",                   # 上游开源软件名全称
+        "License": "GPLStyleLicense","WebRTC","Mark","domain","Apache"         # 上游开源软件中包含的许可证信息
+        "License File": "LICENSE"     # 许可证所在文件路径
+        "Version Number": "4d7f57adca5e9c9657e0adfdc3c95b6534b85cc2",
+        "Upstream URL": "https://webrtc.googlesource.com/src.git@4d7f57adca5e9c9657e0adfdc3c95b6534b85cc2",   # 上游软件包发布地址
+        "Description": "第三方软件webrtc"           # 开源软件功能描述
+    }
+]
