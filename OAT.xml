@@ -63,13 +63,8 @@ used to filter file path.
         <policylist>
             <policy name="projectPolicy" desc="">
                 <policyitem type="compatibility" name="GPLStyleLicense" path=".*" desc="" />
-                <policyitem type="compatibility" name="WebRTC" path=".*" desc="" />
-                <policyitem type="compatibility" name="WebRTC2" path=".*" desc="" />
-                <policyitem type="compatibility" name="WebRTC3" path=".*" desc="" />
-                <policyitem type="compatibility" name="WebRTC4" path=".*" desc="" />
-                <policyitem type="compatibility" name="Mark" path=".*" desc="" />
-                <policyitem type="compatibility" name="domain" path=".*" desc="" />
-                <policyitem type="compatibility" name="Apache" path=".*" desc="" />
+                <policyitem type="compatibility" name="Public Domain" path=".*" desc="" />
+                <policyitem type="compatibility" name="Takuya OOURA License" path=".*" desc="" />
             </policy>
         </policylist>
         <filefilterlist>
@@ -84,131 +79,106 @@ used to filter file path.
                     desc="" />
                     <filteritem type="filepath" name="examples/androidtests/third_party/README.webrtc"
                     desc="" />
-                    <filteritem type="filepath" name="modules/third_party/fft/fft.c"
-                    desc="" />
+                    <filteritem type="filepath" name="modules/third_party/fft/fft.c" desc="" />
+                    <filteritem type="filepath" name="modules/audio_coding/codecs/ilbc/complexityMeasures.m" desc="" />
+                    <filteritem type="filepath" name="examples/androidapp/third_party/autobanh/NOTICE" desc="" />
             </filefilter>
 
             <filefilter name="defaultFilter">
-                <filteritem type="filepath" name="README.OpenSource"
+                    <filteritem type="filepath" name="README.OpenSource"
                     desc="" />
+                    <filteritem type="filepath" name=".*wav" desc="" />
+                    <filteritem type="filepath" name=".*exe" desc="" />
+                    <filteritem type="filepath" name=".*png" desc="" />
+                    <filteritem type="filepath" name=".*rtcp" desc="" />
+                    <filteritem type="filepath" name=".*mdns" desc="" />
+                    <filteritem type="filepath" name=".*sha1" desc="" />
+                    <filteritem type="filepath" name=".*rtp" desc="" />
+                    <filteritem type="filepath" name=".*rtp-0" desc="" />
+                    <filteritem type="filepath" name=".*rtp-1" desc="" />
+                    <filteritem type="filepath" name=".*rtp-2" desc="" />
+                    <filteritem type="filepath" name=".*rtp-3" desc="" />
+                    <filteritem type="filepath" name=".*rtp-4" desc="" />
+                    <filteritem type="filepath" name=".*rtp-5" desc="" />
+                    <filteritem type="filepath" name=".*rtp-6" desc="" />
+                    <filteritem type="filepath" name=".*rtp-6" desc="" />
+                    <filteritem type="filepath" name=".*rtp-7" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-0" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-1" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-2" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-3" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-4" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-5" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-6" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-7" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-8" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-9" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-10" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-11" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-12" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-13" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-14" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-15" desc="" />
+                    <filteritem type="filepath" name=".*dependency-descriptor-16" desc="" />
+                    <filteritem type="filepath" name=".*cur" desc="" />
+                    <filteritem type="filepath" name=".*bin" desc="" />
+                    <filteritem type="filepath" name=".*stun" desc="" />
+                    <filteritem type="filepath" name=".*agc-1" desc="" />
+                    <filteritem type="filepath" name=".*agc-2" desc="" />
+                    <filteritem type="filepath" name=".*agc-3" desc="" />
+                    <filteritem type="filepath" name=".*agc-4" desc="" />
+                    <filteritem type="filepath" name=".*pb" desc="" />
+                    <filteritem type="filepath" name=".*mp3" desc="" />
+                    <filteritem type="filepath" name=".*mp4" desc="" />
+                    <filteritem type="filepath" name=".*pcm" desc="" />
+                    <filteritem type="filepath" name=".*rtpdump" desc="" />
+                    <filteritem type="filepath" name=".*ttf" desc="" />
+                    <filteritem type="filepath" name=".*jar" desc="" />
+                    <filteritem type="filepath" name=".*h264-0" desc="" />
+                    <filteritem type="filepath" name=".*h264-1" desc="" />
+                    <filteritem type="filepath" name=".*audio-processing-0" desc="" />
+                    <filteritem type="filepath" name=".*audio-processing-1" desc="" />
+                    <filteritem type="filepath" name=".*audio-processing-2" desc="" />
+                    <filteritem type="filepath" name=".*audio-processing-3" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/pseudotcp-corpus/785b96587d0eb44dd5d75b7a886f37e2ac504511" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/a8b3fb7be82395c9462684c766841d668dc0029f" desc="" />
+                    <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/0cee4d5fd2905dc1fb2979f10a9724265b7075e2" desc="" />
             </filefilter>
         </filefilterlist>
         <licensematcherlist>
-            <!-- <licensematcher name="LLVM License" desc="">
-                <licensetext name="
-                /* This file is distributed under the University of Illinois Open Source      */
-                /* License. See LICENSE.TXT for details.                                      */
-                " desc="" />
-                </licensematcher>
-            <licensematcher name="OpenBSD" desc="">
-                <licensetext name="
-                * This code is derived from OpenBSD's libc, original license follows:
-                *
-                * Copyright (c) 1998 Todd C. Miller &gt;Todd.Miller@courtesan.com&gt;
-            " desc="" />
-            </licensematcher>
-            <licensematcher name="original license" desc="">
-                <licensetext name="
-                * This is an OpenSSL-compatible implementation of the RSA Data Security, Inc.
-                * MD5 Message-Digest Algorithm (RFC 1321).
-            " desc="" />
-            </licensematcher>
-            <licensematcher name="Khronos License2" desc="">
-                <licensetext name="
-                * Copyright (c) 2008-2018 The Khronos Group Inc.
-            " desc="" />
-            </licensematcher>
-            <licensematcher name="Khronos License3" desc="">
-                <licensetext name="
-                * Copyright (c) 2007-2016 The Khronos Group Inc
-            " desc="" />
-            </licensematcher> -->
-            <licensematcher name="WebRTC" desc="">
-                Minor modifications in code style for WebRTC, 2012.
-                <licensetext name="
-                  Minor modifications in code style for WebRTC, 2012.
-                 Code optimizations for MIPS, 2013.
-            " desc="" />
-            </licensematcher>
            
-            <licensematcher name="WebRTC2" desc="">
+            <licensematcher name="Public Domain" desc="">
                 <licensetext name="
-            
-            
-                Minor modifications in code style for WebRTC, 2012.
+                * From: Wilco Dijkstra &lt;Wilco.Dijkstra@ntlworld.com&gt;
+                    * Date: Fri, Jun 24, 2011 at 3:20 AM
+                    * Subject: Re: sqrt routine
+                    * To: Kevin Ma &lt;kma@google.com&gt;
+                    * Hi Kevin,
+                    * Thanks for asking. Those routines are public domain (originally posted to
+                    * comp.sys.arm a long time ago), so you can use them freely for any purpose.
+                    * Cheers,
+                    * Wilco
             " desc="" />
             </licensematcher>
-
-
-            <licensematcher name="Mark" desc="">
+            <licensematcher name="Public Domain" desc="">
                 <licensetext name="
-                * Copyright(c)1995,97 Mark Olesen &lt;olesen@me.QueensU.CA&gt;&lt;/olesen&gt;
-                *    Queen's Univ at Kingston (Canada)
-                *
-                * Permission to use, copy, modify, and distribute this software for
-                * any purpose without fee is hereby granted, provided that this
-                * entire notice is included in all copies of any software which is
-                * or includes a copy or modification of this software and in all
-                * copies of the supporting documentation for such software.
-                *
-                * THIS SOFTWARE IS BEING PROVIDED &quot;AS IS&quot;, WITHOUT ANY EXPRESS OR
-                * IMPLIED WARRANTY.  IN PARTICULAR, NEITHER THE AUTHOR NOR QUEEN'S
-                * UNIVERSITY AT KINGSTON MAKES ANY REPRESENTATION OR WARRANTY OF ANY
-                * KIND CONCERNING THE MERCHANTABILITY OF THIS SOFTWARE OR ITS
-                * FITNESS FOR ANY PARTICULAR PURPOSE.
-                *
-                * All of which is to say that you can do what you like with this
-                * source code provided you don't try to sell it as your own and you
-                * include an unaltered copy of this message (including the
-                * copyright).
-                *
-                * It is also implicitly understood that bug fixes and improvements
-                * should make their way back to the general Internet community so
-                * that everyone benefits.
-                *
-                * Changes:
-                *   Trivial type modifications by the WebRTC authors.
-                " desc="" />
-            </licensematcher>
-            <licensematcher name="domain" desc="">
-                <licensetext name="
-                License: Public domain. You are free to use this code however you like, with
-                the proviso that the author takes on no responsibility or liability for any
-                use.
+                // License: Public domain. You are free to use this code however you like, with
+                // the proviso that the author takes on no responsibility or liability for any
+                // use.
             " desc="" />
             </licensematcher>
-
-            <licensematcher name="Apache" desc="">
+            <licensematcher name="Takuya OOURA License" desc="">
                 <licensetext name="
-                AutobahnAndroid
-                Copyright 2011,2012 Tavendo GmbH. Licensed under Apache 2.0
-                This product includes software developed at Tavendo GmbH http://www.tavendo.de
-                
+                * You may use, copy, modify and distribute this code for any purpose (include
+                * commercial use) and without fee. Please refer to this package when you modify
+                * this code.
             " desc="" />
             </licensematcher>
-
-
-            <licensematcher name="WebRTC3" desc="">
-                <licensetext name="
-                Copyright(c) 2011 The WebRTC project authors.
-                
-            " desc="" />
-            </licensematcher>
-
-            <licensematcher name="WebRTC4" desc="">
-                <licensetext name="
-                * http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html
-            * Copyright Takuya OOURA, 1996-2001
-            *
-            * You may use, copy, modify and distribute this code for any purpose (include
-            * commercial use) and without fee. Please refer to this package when you modify
-            * this code.
-            *
-            * Changes:
-            * Trivial type modifications by the WebRTC authors.
-                
-            " desc="" />
-            </licensematcher>
+         
         </licensematcherlist>
     </oatconfig>
 </configuration>
