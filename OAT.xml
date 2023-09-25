@@ -61,7 +61,7 @@ used to filter file path.
 <configuration>
     <oatconfig>
         <policylist>
-            <policy name="projectPolicy" desc="">
+            <policy name="projectPolicy" desc="The LICENSE is not standardized">
                 <policyitem type="compatibility" name="GPLStyleLicense" path="modules/third_party/.*" desc="经法务确认。涉及文件在render进程进行了隔离" />
                 <policyitem type="compatibility" name="Public Domain" path="common_audio/third_party/spl_sqrt_floor/.*" desc="经法务确认为宽松型许可证" /> 
                 <policyitem type="compatibility" name="Public Domain" path="rtc_base/third_party/sigslot/.*" desc="经法务确认为宽松型许可证" /> 
@@ -78,7 +78,7 @@ used to filter file path.
         <filefilterlist>
             <filefilter name="defaultPolicyFilter"
                 desc="Filters for compatibility,license header policies">
-                <filteritem type="filepath" name="README.OpenSource" desc="" />
+                <filteritem type="filepath" name="README.OpenSource" desc="Filter readme.opensource files" />
                 <filteritem type="filepath" name="README.chromium"  desc="chrom原生文件无license" />
                 <filteritem type="filepath" name="modules/third_party/fft/README.chromium"  desc="chrom原生文件无license" />
                 <filteritem type="filepath" name="modules/third_party/g722/README.chromium"  desc="chrom原生文件无license" />
@@ -92,8 +92,8 @@ used to filter file path.
 
             
             <filefilter name="defaultFilter">
-                <filteritem type="filepath" name="README.OpenSource" desc="" />
             </filefilter>
+            
             <filefilter name="binaryFileTypePolicyFilter">
                 <filteritem type="filepath" name=".*wav" desc="Chromium原生二进制" />
                 <filteritem type="filepath" name=".*exe" desc="Chromium原生二进制" />
