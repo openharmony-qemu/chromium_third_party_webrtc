@@ -63,10 +63,11 @@ used to filter file path.
         <policylist>
             <policy name="projectPolicy" desc="The LICENSE is not standardized">
                 <policyitem type="compatibility" name="GPLStyleLicense" path="modules/third_party/.*" desc="经法务确认。涉及文件在render进程进行了隔离" />
+                
                 <policyitem type="compatibility" name="Public Domain" path="common_audio/third_party/spl_sqrt_floor/.*" desc="经法务确认为宽松型许可证" /> 
                 <policyitem type="compatibility" name="Public Domain" path="rtc_base/third_party/sigslot/.*" desc="经法务确认为宽松型许可证" /> 
-                <policyitem type="compatibility" name="Takuya OOURA License" path="common_audio/third_party/ooura/fft_size_256/fft4g.cc" desc="经法务确认为宽松型许可证" />
-                <policyitem type="compatibility" name="Takuya OOURA License" path="common_audio/third_party/ooura/LICENSE" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/fft_size_256/fft4g.cc" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/LICENSE" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/README.chromium" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="LicenseRef-scancode-x11-lucent" path="modules/third_party/fft/LICENSE" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="LicenseRef-scancode-x11-lucent" path="modules/third_party/fft/fft.c" desc="经法务确认为宽松型许可证" />
@@ -79,15 +80,15 @@ used to filter file path.
             <filefilter name="defaultPolicyFilter"
                 desc="Filters for compatibility,license header policies">
                 <filteritem type="filepath" name="README.OpenSource" desc="Filter readme.opensource files" />
-                <filteritem type="filepath" name="README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="modules/third_party/fft/README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="modules/third_party/g722/README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="rtc_base/third_party/sigslot/README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="modules/third_party/portaudio/README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="modules/third_party/g711/README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="rtc_base/third_party/base64/README.chromium"  desc="chrom原生文件无license" />
-                <filteritem type="filepath" name="common_audio/third_party/spl_sqrt_floor/README.chromium"  desc="chrom原生文件无license" />   
+                <filteritem type="filepath" name="README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/fft/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/g722/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="rtc_base/third_party/sigslot/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/portaudio/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/g711/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="rtc_base/third_party/base64/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="common_audio/third_party/spl_sqrt_floor/README.chromium"  desc="chromium原生文件无license" />   
             </filefilter>
 
             
@@ -95,66 +96,66 @@ used to filter file path.
             </filefilter>
             
             <filefilter name="binaryFileTypePolicyFilter">
-                <filteritem type="filepath" name=".*wav" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*exe" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*png" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtcp" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*mdns" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*sha1" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-1" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-2" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-3" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-4" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-5" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-6" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-6" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtp-7" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-1" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-2" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-3" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-4" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-5" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-6" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-7" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-8" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-9" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-10" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-11" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-12" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-13" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-14" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-15" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*dependency-descriptor-16" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*cur" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*bin" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*stun" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*agc-1" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*agc-2" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*agc-3" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*agc-4" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*pb" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*mp3" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*mp4" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*pcm" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*rtpdump" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*ttf" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*jar" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*h264-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*h264-1" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*audio-processing-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*audio-processing-1" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*audio-processing-2" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name=".*audio-processing-3" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/pseudotcp-corpus/785b96587d0eb44dd5d75b7a886f37e2ac504511" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/a8b3fb7be82395c9462684c766841d668dc0029f" desc="Chromium原生二进制" />
-                <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/0cee4d5fd2905dc1fb2979f10a9724265b7075e2" desc="Chromium原生二进制" />
+                <filteritem type="filepath" name=".*wav" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*exe" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*png" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtcp" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*mdns" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*sha1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-2" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-3" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-4" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-5" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-6" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-6" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp-7" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-2" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-3" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-4" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-5" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-6" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-7" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-8" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-9" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-10" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-11" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-12" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-13" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-14" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-15" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*dependency-descriptor-16" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*cur" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*bin" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*stun" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*agc-1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*agc-2" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*agc-3" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*agc-4" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*pb" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*mp3" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*mp4" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*pcm" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtpdump" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*ttf" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*jar" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*h264-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*h264-1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*audio-processing-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*audio-processing-1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*audio-processing-2" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*audio-processing-3" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/pseudotcp-corpus/785b96587d0eb44dd5d75b7a886f37e2ac504511" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/a8b3fb7be82395c9462684c766841d668dc0029f" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/0cee4d5fd2905dc1fb2979f10a9724265b7075e2" desc="chromium原生二进制" />
             </filefilter>
         </filefilterlist>
         <licensematcherlist>
@@ -193,13 +194,7 @@ used to filter file path.
                 // use.
             " desc="" />
             </licensematcher>
-            <licensematcher name="Takuya OOURA License" desc="">
-                <licensetext name="
-                * You may use, copy, modify and distribute this code for any purpose (include
-                * commercial use) and without fee. Please refer to this package when you modify
-                * this code.
-            " desc="" />
-            </licensematcher>
+            
             <licensematcher name="LicenseRef-scancode-takuya-ooura" desc="">
                 <licensetext name="
                 Name: General Purpose FFT (Fast Fourier/Cosine/Sine Transform) Package
@@ -210,8 +205,16 @@ used to filter file path.
                 License: Custome license
                 License File: LICENSE
                 Security Critical: yes
+            " desc="" /><licensetext name="
+                * http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html
+                * Copyright Takuya OOURA, 1996-2001
+                *
+                * You may use, copy, modify and distribute this code for any purpose (include
+                * commercial use) and without fee. Please refer to this package when you modify
+                * this code.
             " desc="" />
             </licensematcher>
+
             <licensematcher name="GFDL-1.2-only" desc="">
                 <licensetext name="
                 The third_party directory contains sources from other projects.
