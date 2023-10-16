@@ -1,11 +1,11 @@
 [
     {
-        "Name": "webrtc",                   
-        "License": "BSD-3-Clause",        
-        "License File": "LICENSE",     
+        "Name": "webrtc",
+        "License": "BSD-3-Clause",
+        "License File": "LICENSE",
         "Version Number": "4d7f57adca5e9c9657e0adfdc3c95b6534b85cc2",
         "Owner": "jinchanggang@huawei.com",
-        "Upstream URL": "https://webrtc.googlesource.com/src.git@4d7f57adca5e9c9657e0adfdc3c95b6534b85cc2",  
-        "Description": "第三方软件webrtc"          
+        "Upstream URL": "https://webrtc.googlesource.com/src.git@4d7f57adca5e9c9657e0adfdc3c95b6534b85cc2",
+        "Description": "第三方软件webrtc"
     }
 ]
