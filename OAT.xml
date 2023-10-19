@@ -71,7 +71,6 @@ used to filter file path.
                 <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/README.chromium" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="LicenseRef-scancode-x11-lucent" path="modules/third_party/fft/LICENSE" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="LicenseRef-scancode-x11-lucent" path="modules/third_party/fft/fft.c" desc="经法务确认为宽松型许可证" />
-                <policyitem type="compatibility" name="LicenseRef-scancode-unknown-license-reference" path="examples/androidapp/third_party/autobanh/NOTICE" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="GFDL-1.2-only" path="examples/androidtests/third_party/README.webrtc" desc="经法务确认为宽松型许可证" />
                 <policyitem type="compatibility" name="LicenseRef-scancode-google-patent-license-webrtc" path="PATENTS" desc="经法务确认为宽松型许可证" />
             </policy>
@@ -93,6 +92,8 @@ used to filter file path.
             
             <filefilter name="defaultFilter">
                 <filteritem type="filepath" name="README.OpenSource" desc="Filter readme.opensource files" />
+                
+                <filteritem type="filepath" name="examples/androidapp/third_party/autobanh/NOTICE" desc="经确认，该文件不会使用" />
             </filefilter>
             
             <filefilter name="binaryFileTypePolicyFilter">
