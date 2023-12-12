@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (c) 2021 Huawei Device Co., Ltd.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+
+    This is the configuration file template for OpenHarmony OSS Audit Tool, please copy it to your
+project root dir and modify it refer to OpenHarmony/tools_oat/README.
+    All configurations in this file will be merged to OAT-Default.xml, if you have any questions or
+concerns, please create issue in OpenHarmony/tools_oat and @jalenchen or chenyaxun.
+
+    licensefile:
+    1.If the project don't have "LICENSE" in root dir, please define all the license files in this
+project in , OAT will check license files according to this rule.
+
+    policylist:
+    1. policy: If the OAT-Default.xml policies do not meet your requirements, please add policies here.
+    2. policyitem: The fields type, name, path, desc is required, and the fields rule, group,
+filefilter is optional,the default value is:
+    <policyitem type="" name="" path="" desc="" rule="may" group="defaultGroup"
+filefilter="defaultPolicyFilter"/>
+    3. policyitem type:
+        "compatibility" is used to check license compatibility in the specified path;
+        "license" is used to check source license header in the specified path;
+        "copyright" is used to check source copyright header in the specified path;
+        "import" is used to check source dependency in the specified path, such as import ... ,include ...
+        "filetype" is used to check file type in the specified path, supported file types: archive, binary
+        "filename" is used to check whether the specified file exists in the specified path(projectroot
+means the root dir of the project), supported file names: LICENSE, README, README.OpenSource
+    4. policyitem name: This field is used for define the license, copyright, "*" means match all, the
+"!" prefix means could not match this value. For example, "!GPL" means can not use GPL license.
+    5. policyitem path: This field is used for define the source file scope to apply this policyitem,
+the "!" prefix means exclude the files. For example, "!.*/lib/.*" means files in lib dir will be
+exclude while process this policyitem.
+    6. policyitem rule and group: These two fields are used together to merge policy results. "may"
+policyitems in the same group means any one in this group passed, the result will be passed.
+    7. policyitem filefilter: Used to bind filefilter which define filter rules.
+    7. policyitem desc: Used to describe the reason of this policy item, committers will check this
+while merging the code.
+    8. filefilter: Filter rules, the type filename is used to filter file name, the type filepath is
+used to filter file path.
+
+    Note:If the text contains special characters, please escape them according to the following rules:
+    " == &quot;
+    & == &amp;
+    ' == &apos;
+    < == &lt;
+    > == &gt;
+-->
+
+<configuration>
+    <oatconfig>
+        <policylist>
+            <policy name="projectPolicy" desc="The LICENSE is not standardized">
+                <policyitem type="compatibility" name="GPLStyleLicense" path="modules/third_party/g722/.*" desc="经法务确认,涉及文件在render进程进行了隔离" />
+                <policyitem type="compatibility" name="GPLStyleLicense" path="modules/third_party/g711/.*" desc="经法务确认,涉及文件在render进程进行了隔离" />
+                
+                <policyitem type="compatibility" name="Public Domain" path="common_audio/third_party/spl_sqrt_floor/.*" desc="经法务确认为宽松型许可证" /> 
+                <policyitem type="compatibility" name="Public Domain" path="rtc_base/third_party/sigslot/.*" desc="经法务确认为宽松型许可证" /> 
+                <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/fft_size_256/fft4g.cc" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/LICENSE" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-takuya-ooura" path="common_audio/third_party/ooura/README.chromium" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-x11-lucent" path="modules/third_party/fft/LICENSE" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-x11-lucent" path="modules/third_party/fft/fft.c" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="GFDL-1.2-only" path="examples/androidtests/third_party/README.webrtc" desc="经法务确认为宽松型许可证" />
+                <policyitem type="compatibility" name="LicenseRef-scancode-google-patent-license-webrtc" path="PATENTS" desc="经法务确认为宽松型许可证" />
+            </policy>
+        </policylist>
+        <filefilterlist>
+            <filefilter name="defaultPolicyFilter"
+                desc="Filters for compatibility,license header policies">
+                <filteritem type="filepath" name="README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/fft/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/g722/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="rtc_base/third_party/sigslot/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/portaudio/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="modules/third_party/g711/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="rtc_base/third_party/base64/README.chromium"  desc="chromium原生文件无license" />
+                <filteritem type="filepath" name="common_audio/third_party/spl_sqrt_floor/README.chromium"  desc="chromium原生文件无license" />   
+            </filefilter>
+
+            
+            <filefilter name="defaultFilter">
+                <filteritem type="filepath" name="README.OpenSource" desc="Filter readme.opensource files" />
+                
+                <filteritem type="filepath" name="examples/androidapp/third_party/autobanh/NOTICE" desc="经确认，该文件不会使用" />
+            </filefilter>
+            
+            <filefilter name="binaryFileTypePolicyFilter">
+                <filteritem type="filepath" name=".*wav" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*exe" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*png" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtcp" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*mdns" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*sha1" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtp" desc="chromium原生二进制" />
+                <filteritem type="filename" name="rtp-*" desc="chromium原生二进制" />
+                <filteritem type="filename" name="dependency-descriptor-*" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*cur" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*bin" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*stun" desc="chromium原生二进制" />
+                <filteritem type="filename" name="agc-*" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*pb" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*mp3" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*mp4" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*pcm" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*rtpdump" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*ttf" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*jar" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*h264-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name=".*h264-1" desc="chromium原生二进制" />
+                <filteritem type="filename" name="audio-processing-*" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/pseudotcp-corpus/785b96587d0eb44dd5d75b7a886f37e2ac504511" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/rtp-depacketizer-av1-assemble-frame-corpus/av1-assemble-frame-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/video_layers_allocation-corpus/vla-0" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/a8b3fb7be82395c9462684c766841d668dc0029f" desc="chromium原生二进制" />
+                <filteritem type="filepath" name="test/fuzzers/corpora/vp9-encoder-references-corpus/0cee4d5fd2905dc1fb2979f10a9724265b7075e2" desc="chromium原生二进制" />
+            </filefilter>
+        </filefilterlist>
+        <licensematcherlist>
+           
+            <licensematcher name="Public Domain" desc="">
+                <licensetext name="
+                * From: Wilco Dijkstra &lt;Wilco.Dijkstra@ntlworld.com&gt;
+                    * Date: Fri, Jun 24, 2011 at 3:20 AM
+                    * Subject: Re: sqrt routine
+                    * To: Kevin Ma &lt;kma@google.com&gt;
+                    * Hi Kevin,
+                    * Thanks for asking. Those routines are public domain (originally posted to
+                    * comp.sys.arm a long time ago), so you can use them freely for any purpose.
+                    * Cheers,
+                    * Wilco
+            " desc="" />
+            </licensematcher>
+            <licensematcher name="BSD-3-Clause" desc="">
+                <licensetext name="
+                % % Copyright(c) 2011 The WebRTC project authors.All Rights Reserved.%
+                        % Use of this source code is governed by a BSD
+                    -
+                    style license % that can be found in the LICENSE file in the root of the source
+                        % tree.An additional intellectual property rights grant can be found
+                        % in the file PATENTS.All contributing project authors may
+                        % be found in the AUTHORS file in the root of the source tree.%
+
+                        clear;
+                pack;
+            " desc="" />
+            </licensematcher>
+            <licensematcher name="Public Domain" desc="">
+                <licensetext name="
+                // License: Public domain. You are free to use this code however you like, with
+                // the proviso that the author takes on no responsibility or liability for any
+                // use.
+            " desc="" />
+            </licensematcher>
+            
+            <licensematcher name="LicenseRef-scancode-takuya-ooura" desc="">
+                <licensetext name="
+                Name: General Purpose FFT (Fast Fourier/Cosine/Sine Transform) Package
+                Short Name: fft4g
+                URL: http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html
+                Version: 0
+                Date: 2018-06-19
+                License: Custome license
+                License File: LICENSE
+                Security Critical: yes
+            " desc="" /><licensetext name="
+                * http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html
+                * Copyright Takuya OOURA, 1996-2001
+                *
+                * You may use, copy, modify and distribute this code for any purpose (include
+                * commercial use) and without fee. Please refer to this package when you modify
+                * this code.
+            " desc="" />
+            </licensematcher>
+
+            <licensematcher name="GFDL-1.2-only" desc="">
+                <licensetext name="
+                The third_party directory contains sources from other projects.
+
+                Code in third_party must document the license under which the source is being
+                used. If the source itself does not include a license header or file, create
+                an entry in this file that refers to reliable documentation of the project's
+                license terms on the web (and add a note pointing here in the README file in
+                that directory).
+
+            " desc="" />
+            </licensematcher>
+            <licensematcher name="LicenseRef-scancode-x11-lucent" desc="">
+                <licensetext name="
+                    * Permission to use, copy, modify, and distribute this software for
+                    * any purpose without fee is hereby granted, provided that this
+                    * entire notice is included in all copies of any software which is
+                    * or includes a copy or modification of this software and in all
+                    * copies of the supporting documentation for such software.
+                    *
+                    * THIS SOFTWARE IS BEING PROVIDED &quot;AS IS&quot;, WITHOUT ANY EXPRESS OR
+                    * IMPLIED WARRANTY.  IN PARTICULAR, NEITHER THE AUTHOR NOR QUEEN'S
+                    * UNIVERSITY AT KINGSTON MAKES ANY REPRESENTATION OR WARRANTY OF ANY
+                    * KIND CONCERNING THE MERCHANTABILITY OF THIS SOFTWARE OR ITS
+                    * FITNESS FOR ANY PARTICULAR PURPOSE.
+                    *
+                    * All of which is to say that you can do what you like with this
+                    * source code provided you don't try to sell it as your own and you
+                    * include an unaltered copy of this message (including the
+                    * copyright).
+                    *
+                    * It is also implicitly understood that bug fixes and improvements
+                    * should make their way back to the general Internet community so
+                    * that everyone benefits.
+            " desc="" />
+            </licensematcher>
+            <licensematcher name="LicenseRef-scancode-google-patent-license-webrtc" desc="">
+                <licensetext name="
+                   Additional IP Rights Grant (Patents)
+
+                    &quot;This implementation&quot; means the copyrightable works distributed by
+                    Google as part of the WebRTC code package.
+
+                    Google hereby grants to you a perpetual, worldwide, non-exclusive,
+                    no-charge, irrevocable (except as stated in this section) patent
+                    license to make, have made, use, offer to sell, sell, import,
+                    transfer, and otherwise run, modify and propagate the contents of this
+                    implementation of the WebRTC code package, where such license applies
+                    only to those patent claims, both currently owned by Google and
+                    acquired in the future, licensable by Google that are necessarily
+                    infringed by this implementation of the WebRTC code package. This
+                    grant does not include claims that would be infringed only as a
+                    consequence of further modification of this implementation. If you or
+                    your agent or exclusive licensee institute or order or agree to the
+                    institution of patent litigation against any entity (including a
+                    cross-claim or counterclaim in a lawsuit) alleging that this
+                    implementation of the WebRTC code package or any code incorporated
+                    within this implementation of the WebRTC code package constitutes
+                    direct or contributory patent infringement, or inducement of patent
+                    infringement, then any patent rights granted to you under this License
+                    for this implementation of the WebRTC code package shall terminate as
+                    of the date such litigation is filed.
+            " desc="" />
+            </licensematcher> 
+            <licensematcher name="LicenseRef-scancode-unknown-license-reference" desc="">
+                <licensetext name="
+                   AutobahnAndroid
+                    Copyright 2011,2012 Tavendo GmbH. Licensed under Apache 2.0
+                    This product includes software developed at Tavendo GmbH http://www.tavendo.de
+            " desc="" />
+            </licensematcher>
+        </licensematcherlist>
+    </oatconfig>
+</configuration>
