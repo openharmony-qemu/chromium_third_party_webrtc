@@ -39,6 +39,11 @@
 #include "third_party/openh264/src/codec/api/wels/codec_def.h"
 #include "third_party/openh264/src/codec/api/wels/codec_ver.h"
 
+#if defined(OHOS_WEBRTC)
+// Only needed in OHOS.
+#include "build/build_config.h"
+#endif
+
 namespace webrtc {
 
 namespace {
@@ -275,7 +280,11 @@ int32_t H264EncoderImpl::InitEncode(const VideoCodec* inst,
     configurations_[i].height = codec_.simulcastStream[idx].height;
     configurations_[i].max_frame_rate = static_cast<float>(codec_.maxFramerate);
     configurations_[i].frame_dropping_on = codec_.GetFrameDropEnabled();
+#if defined(OHOS_WEBRTC)
+    configurations_[i].key_frame_interval = 1;
+#else
     configurations_[i].key_frame_interval = codec_.H264()->keyFrameInterval;
+#endif
     configurations_[i].num_temporal_layers =
         std::max(codec_.H264()->numberOfTemporalLayers,
                  codec_.simulcastStream[idx].numberOfTemporalLayers);
