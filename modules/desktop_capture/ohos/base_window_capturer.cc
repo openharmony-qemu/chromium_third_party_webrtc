@@ -280,6 +280,7 @@ void BaseWindowCapturer::HandleBuffer() {
     pData += frameStride;
     pSrcData += stride;
   }
+  current_frame->mutable_updated_region()->SetRect(DesktopRect::MakeSize(current_frame->size()));
 
   {
     webrtc::MutexLock lock(&current_frame_lock_);
