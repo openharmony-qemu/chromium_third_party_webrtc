@@ -229,7 +229,7 @@ void BaseWindowCapturer::HandleBuffer() {
     return;
   }
 
-  std::unique_ptr<OHOS::NWeb::SurfaceBufferAdapter> buffer =
+  std::shared_ptr<OHOS::NWeb::SurfaceBufferAdapter> buffer =
       screen_capture_adapter_->AcquireVideoBuffer();
   if (!buffer) {
     LOG(ERROR) << "acquire video buffer failed";
