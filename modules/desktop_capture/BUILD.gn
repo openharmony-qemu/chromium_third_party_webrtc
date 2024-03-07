@@ -418,7 +418,9 @@ rtc_library("desktop_capture") {
       "ohos/base_window_capturer.h",
     ]
     include_dirs = ohos_src_includes
-    libs = [ "nweb_ohos_adapter.z" ]
+    deps += [
+      "//third_party/ohos_ndk:ohos_isolation",
+    ]
   }
 
   if (!is_ohos && !is_win && !is_mac && !rtc_use_x11_extensions && !rtc_use_pipewire
