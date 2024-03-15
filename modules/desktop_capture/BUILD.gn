@@ -416,6 +416,22 @@ rtc_library("desktop_capture") {
       "window_capturer_ohos.cc",
       "ohos/base_window_capturer.cc",
       "ohos/base_window_capturer.h",
+      "ohos/audio_capture_info_adapter_impl.cc",
+      "ohos/audio_capture_info_adapter_impl.h",
+      "ohos/audio_enc_info_adapter_impl.cc",
+      "ohos/audio_enc_info_adapter_impl.h",
+      "ohos/audio_info_adapter_impl.cc",
+      "ohos/audio_info_adapter_impl.h",
+      "ohos/recorder_info_adapter_impl.cc",
+      "ohos/recorder_info_adapter_impl.h",
+      "ohos/screen_capture_config_adapter_impl.cc",
+      "ohos/screen_capture_config_adapter_impl.h",
+      "ohos/video_capture_info_adapter_impl.cc",
+      "ohos/video_capture_info_adapter_impl.h",
+      "ohos/video_enc_info_adapter_impl.cc",
+      "ohos/video_enc_info_adapter_impl.h",
+      "ohos/video_info_adapter_impl.cc",
+      "ohos/video_info_adapter_impl.h",
     ]
     include_dirs = ohos_src_includes
     deps += [
