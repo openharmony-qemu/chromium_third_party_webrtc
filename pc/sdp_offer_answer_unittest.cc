@@ -556,6 +556,7 @@ TEST_F(SdpOfferAnswerTest, DuplicateSsrcsDisallowedInLocalDescription) {
   auto& offer_contents = offer->description()->contents();
   ASSERT_EQ(offer_contents.size(), 2u);
   uint32_t second_ssrc = offer_contents[1].media_description()->first_ssrc();
+
   offer->description()
       ->contents()[0]
       .media_description()
