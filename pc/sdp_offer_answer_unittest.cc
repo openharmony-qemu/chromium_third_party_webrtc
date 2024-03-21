@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include "absl/strings/str_replace.h"
 #include "api/audio/audio_mixer.h"
 #include "api/audio_codecs/builtin_audio_decoder_factory.h"
 #include "api/audio_codecs/builtin_audio_encoder_factory.h"
@@ -546,5 +547,21 @@ TEST_F(SdpOfferAnswerTest, RejectedDataChannelsDoGetReofferedWhenActive) {
 }
 
 #endif  // WEBRTC_HAVE_SCTP
+
+TEST_F(SdpOfferAnswerTest, DuplicateSsrcsDisallowedInLocalDescription) {
+  auto pc = CreatePeerConnection();
+  pc->AddAudioTrack("audio_track", {});
+  pc->AddVideoTrack("video_track", {});
+  auto offer = pc->CreateOffer();
+  auto& offer_contents = offer->description()->contents();
+  ASSERT_EQ(offer_contents.size(), 2u);
+  uint32_t second_ssrc = offer_contents[1].media_description()->first_ssrc();
+  offer->description()
+      ->contents()[0]
+      .media_description()
+      ->mutable_streams()[0]
+      .ssrcs[0] = second_ssrc;
+  EXPECT_FALSE(pc->SetLocalDescription(std::move(offer)));
+}
 
 }  // namespace webrtc
