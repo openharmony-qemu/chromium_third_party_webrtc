@@ -21,18 +21,25 @@
 
 #include "absl/memory/memory.h"
 #include "base/logging.h"
+#include "base/memory/platform_shared_memory_region.h"
+#include "base/memory/ptr_util.h"
+#include "base/memory/read_only_shared_memory_region.h"
 #include "base/task/single_thread_task_runner.h"
 #include "modules/desktop_capture/desktop_capture_options.h"
 #include "modules/desktop_capture/desktop_capturer.h"
+#include "modules/desktop_capture/ohos/audio_capture_info_adapter_impl.h"
+#include "modules/desktop_capture/ohos/audio_enc_info_adapter_impl.h"
+#include "modules/desktop_capture/ohos/audio_info_adapter_impl.h"
+#include "modules/desktop_capture/ohos/recorder_info_adapter_impl.h"
+#include "modules/desktop_capture/ohos/screen_capture_config_adapter_impl.h"
+#include "modules/desktop_capture/ohos/video_capture_info_adapter_impl.h"
+#include "modules/desktop_capture/ohos/video_enc_info_adapter_impl.h"
+#include "modules/desktop_capture/ohos/video_info_adapter_impl.h"
 #include "rtc_base/checks.h"
 #include "rtc_base/logging.h"
 #include "rtc_base/string_encode.h"
 #include "rtc_base/string_to_number.h"
 #include "rtc_base/time_utils.h"
-
-#include "base/memory/platform_shared_memory_region.h"
-#include "base/memory/ptr_util.h"
-#include "base/memory/read_only_shared_memory_region.h"
 
 namespace webrtc {
 namespace {
@@ -179,26 +186,36 @@ BaseWindowCapturer::BaseWindowCapturer(CaptureSourceType source_type)
     LOG(ERROR) << "create screen capture adapter failed";
     return;
   }
-  OHOS::NWeb::AudioCaptureInfoAdapter micCapInfo = {
-      .audioSampleRate = kAudioSampleRate,
-      .audioChannels = kAudioChannels,
-      .audioSource = OHOS::NWeb::AudioCaptureSourceTypeAdapter::SOURCE_DEFAULT
-  };
-  OHOS::NWeb::AudioInfoAdapter audioInfo = {.micCapInfo = micCapInfo};
 
-  OHOS::NWeb::VideoCaptureInfoAdapter videoCapInfo = {
-      .videoFrameWidth = videoFrameWidth,
-      .videoFrameHeight = videoFrameHeight,
-      .videoSource =
-          OHOS::NWeb::VideoSourceTypeAdapter::VIDEO_SOURCE_SURFACE_RGBA
-  };
-  OHOS::NWeb::VideoInfoAdapter videoInfo = {.videoCapInfo = videoCapInfo};
-  OHOS::NWeb::ScreenCaptureConfigAdapter config = {
-      .captureMode = OHOS::NWeb::CaptureModeAdapter::CAPTURE_HOME_SCREEN,
-      .dataType = OHOS::NWeb::DataTypeAdapter::ORIGINAL_STREAM_DATA_TYPE,
-      .audioInfo = audioInfo,
-      .videoInfo = videoInfo
-  };
+  std::shared_ptr<OHOS::NWeb::AudioCaptureInfoAdapterImpl> micCapInfo =
+      std::make_shared<OHOS::NWeb::AudioCaptureInfoAdapterImpl>();
+  micCapInfo->SetAudioSampleRate(kAudioSampleRate);
+  micCapInfo->SetAudioChannels(kAudioChannels);
+  micCapInfo->SetAudioSource(
+      OHOS::NWeb::AudioCaptureSourceTypeAdapter::SOURCE_DEFAULT);
+
+  std::shared_ptr<OHOS::NWeb::AudioInfoAdapterImpl> audioInfo =
+      std::make_shared<OHOS::NWeb::AudioInfoAdapterImpl>();
+  audioInfo->SetMicCapInfo(micCapInfo);
+
+  std::shared_ptr<OHOS::NWeb::VideoCaptureInfoAdapterImpl> videoCapInfo =
+      std::make_shared<OHOS::NWeb::VideoCaptureInfoAdapterImpl>();
+  videoCapInfo->SetVideoFrameWidth(videoFrameWidth);
+  videoCapInfo->SetVideoFrameHeight(videoFrameHeight);
+  videoCapInfo->SetVideoSourceType(
+      OHOS::NWeb::VideoSourceTypeAdapter::VIDEO_SOURCE_SURFACE_RGBA);
+
+  std::shared_ptr<OHOS::NWeb::VideoInfoAdapterImpl> videoInfo =
+      std::make_shared<OHOS::NWeb::VideoInfoAdapterImpl>();
+  videoInfo->SetVideoCapInfo(videoCapInfo);
+
+  std::shared_ptr<OHOS::NWeb::ScreenCaptureConfigAdapterImpl> config =
+      std::make_shared<OHOS::NWeb::ScreenCaptureConfigAdapterImpl>();
+  config->SetCaptureMode(OHOS::NWeb::CaptureModeAdapter::CAPTURE_HOME_SCREEN);
+  config->SetDataType(OHOS::NWeb::DataTypeAdapter::ORIGINAL_STREAM_DATA_TYPE);
+  config->SetAudioInfo(audioInfo);
+  config->SetVideoInfo(videoInfo);
+
   if (screen_capture_adapter_->Init(config) != 0) {
     screen_capture_adapter_ = nullptr;
     LOG(ERROR) << "screen capture init failed";
@@ -280,7 +297,8 @@ void BaseWindowCapturer::HandleBuffer() {
     pData += frameStride;
     pSrcData += stride;
   }
-  current_frame->mutable_updated_region()->SetRect(DesktopRect::MakeSize(current_frame->size()));
+  current_frame->mutable_updated_region()->SetRect(
+      DesktopRect::MakeSize(current_frame->size()));
 
   {
     webrtc::MutexLock lock(&current_frame_lock_);
