@@ -59,10 +59,15 @@ class BaseWindowCapturer : public DesktopCapturer {
 
   void HandleBuffer();
 
+  void SetScreenCaptureState(const OHOS::NWeb::ScreenCaptureStateCodeAdapter& stateCode);
+
  private:
   webrtc::Mutex current_frame_lock_;
 
   std::unique_ptr<DesktopFrame> current_frame_;
+
+  OHOS::NWeb::ScreenCaptureStateCodeAdapter capture_state_code_ =
+      OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INVLID;
 
   Callback* callback_ = nullptr;
 
