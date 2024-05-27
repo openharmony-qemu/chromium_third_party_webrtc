@@ -145,6 +145,12 @@ class OHOSScreenCaptureCallback
         base::BindOnce(&BaseWindowCapturer::HandleBuffer, capturer_));
   }
 
+  void OnStateChange(OHOS::NWeb::ScreenCaptureStateCodeAdapter stateCode) override {
+    task_runner_->PostTask(
+        FROM_HERE,
+        base::BindOnce(&BaseWindowCapturer::SetScreenCaptureState, capturer_, stateCode));
+  }
+
  private:
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
   base::WeakPtr<BaseWindowCapturer> capturer_;
@@ -307,6 +313,13 @@ void BaseWindowCapturer::HandleBuffer() {
   screen_capture_adapter_->ReleaseVideoBuffer();
 }
 
+void BaseWindowCapturer::SetScreenCaptureState(const OHOS::NWeb::ScreenCaptureStateCodeAdapter& stateCode) {
+  {
+    webrtc::MutexLock lock(&current_frame_lock_);
+    capture_state_code_ = stateCode;
+  }
+}
+
 void BaseWindowCapturer::Start(Callback* callback) {
   RTC_DCHECK(!callback_);
   RTC_DCHECK(callback);
@@ -337,6 +350,11 @@ void BaseWindowCapturer::CaptureFrame() {
   std::unique_ptr<DesktopFrame> current_frame;
   {
     webrtc::MutexLock lock(&current_frame_lock_);
+    if (capture_state_code_ == OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_CANCELED) {
+      LOG(INFO) << "start capture SCREEN_CAPTURE_STATE_CANCELED";
+      callback_->OnCaptureResult(Result::ERROR_PERMANENT, nullptr);
+      return;
+    }
     current_frame = std::move(current_frame_);
   }
   if (!current_frame) {
