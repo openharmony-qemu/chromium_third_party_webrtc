@@ -62,6 +62,8 @@ class BaseWindowCapturer : public DesktopCapturer {
   void SetScreenCaptureState(const OHOS::NWeb::ScreenCaptureStateCodeAdapter& stateCode);
 
  private:
+  static DesktopCapturer::Result HandleCaptureStateCode(const OHOS::NWeb::ScreenCaptureStateCodeAdapter& code);
+
   webrtc::Mutex current_frame_lock_;
 
   std::unique_ptr<DesktopFrame> current_frame_;

@@ -341,6 +341,21 @@ void BaseWindowCapturer::Start(Callback* callback) {
   LOG(INFO) << "start capture success";
 }
 
+DesktopCapturer::Result BaseWindowCapturer::HandleCaptureStateCode(const OHOS::NWeb::ScreenCaptureStateCodeAdapter& code) {
+  switch (code) {
+    case OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_CANCELED:
+    case OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_STOPPED_BY_USER:
+    case OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INTERRUPTED_BY_OTHER:
+    case OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_STOPPED_BY_CALL:
+      return DesktopCapturer::Result::ERROR_PERMANENT;
+    case OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_ENTER_PRIVATE_SCENE:
+      return DesktopCapturer::Result::ERROR_TEMPORARY;
+    default:
+      break;
+  }
+  return DesktopCapturer::Result::SUCCESS;
+}
+
 void BaseWindowCapturer::CaptureFrame() {
   if (portal_init_failed_) {
     callback_->OnCaptureResult(Result::ERROR_PERMANENT, nullptr);
@@ -348,15 +363,19 @@ void BaseWindowCapturer::CaptureFrame() {
   }
 
   std::unique_ptr<DesktopFrame> current_frame;
+  OHOS::NWeb::ScreenCaptureStateCodeAdapter capture_state_code;
   {
     webrtc::MutexLock lock(&current_frame_lock_);
-    if (capture_state_code_ == OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_CANCELED) {
-      LOG(INFO) << "start capture SCREEN_CAPTURE_STATE_CANCELED";
-      callback_->OnCaptureResult(Result::ERROR_PERMANENT, nullptr);
-      return;
-    }
+    capture_state_code = capture_state_code_;
     current_frame = std::move(current_frame_);
   }
+  DesktopCapturer::Result result = HandleCaptureStateCode(capture_state_code);
+  if (result != DesktopCapturer::Result::SUCCESS) {
+    LOG(INFO) << "start capture interrupted or stopped";
+    callback_->OnCaptureResult(result, nullptr);
+    return;
+  }
+
   if (!current_frame) {
     callback_->OnCaptureResult(Result::ERROR_TEMPORARY, nullptr);
     return;
