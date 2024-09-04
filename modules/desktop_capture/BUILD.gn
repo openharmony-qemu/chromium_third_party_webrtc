@@ -435,7 +435,7 @@ rtc_library("desktop_capture") {
     ]
     include_dirs = ohos_src_includes
     deps += [
-      "//ohos_glue:ohos_adapter_glue_source",
+      "//ohos_adapter:nweb_ohos_adapter",
     ]
   }
 
