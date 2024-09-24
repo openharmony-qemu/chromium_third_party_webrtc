@@ -1802,8 +1802,10 @@ RTCError SdpOfferAnswerHandler::ReplaceRemoteDescription(
   ReportSimulcastApiVersion(kSimulcastVersionApplyRemoteDescription,
                             *session_desc);
 
+  const auto* local = local_description();
   // NOTE: This will perform an Invoke() to the network thread.
-  return transport_controller()->SetRemoteDescription(sdp_type, session_desc);
+  return transport_controller()->SetRemoteDescription(
+      sdp_type, local ? local->description() : nullptr, session_desc);
 }
 
 void SdpOfferAnswerHandler::ApplyRemoteDescription(
@@ -4477,13 +4479,15 @@ RTCError SdpOfferAnswerHandler::PushdownTransportDescription(
   if (source == cricket::CS_LOCAL) {
     const SessionDescriptionInterface* sdesc = local_description();
     RTC_DCHECK(sdesc);
-    return transport_controller()->SetLocalDescription(type,
-                                                       sdesc->description());
+    const auto* remote = remote_description();
+    return transport_controller()->SetLocalDescription(
+        type, sdesc->description(), remote ? remote->description() : nullptr);
   } else {
     const SessionDescriptionInterface* sdesc = remote_description();
     RTC_DCHECK(sdesc);
-    return transport_controller()->SetRemoteDescription(type,
-                                                        sdesc->description());
+    const auto* local = local_description();
+    return transport_controller()->SetRemoteDescription(
+        type, local ? local->description() : nullptr, sdesc->description());
   }
 }
 
