@@ -169,6 +169,7 @@ class JsepTransportController : public sigslot::has_slots<> {
   RTCError SetLocalDescription(SdpType type,
                                const cricket::SessionDescription* local_desc,
                                const cricket::SessionDescription* remote_desc);
+
   // Call to apply a remote description (See `SetLocalDescription()` for local).
   //
   // `remote_desc` must always be valid. If a local description has previously
