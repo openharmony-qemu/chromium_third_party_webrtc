@@ -147,8 +147,8 @@ class OHOSScreenCaptureCallback
 
   void OnStateChange(OHOS::NWeb::ScreenCaptureStateCodeAdapter stateCode) override {
     task_runner_->PostTask(
-        FROM_HERE,
-        base::BindOnce(&BaseWindowCapturer::SetScreenCaptureState, capturer_, stateCode));
+      FROM_HERE,
+      base::BindOnce(&BaseWindowCapturer::SetScreenCaptureState, capturer_, stateCode));
   }
 
  private:

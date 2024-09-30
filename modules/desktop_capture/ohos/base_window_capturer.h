@@ -68,8 +68,8 @@ class BaseWindowCapturer : public DesktopCapturer {
 
   std::unique_ptr<DesktopFrame> current_frame_;
 
-  OHOS::NWeb::ScreenCaptureStateCodeAdapter capture_state_code_ =
-      OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INVLID;
+  OHOS::NWeb::ScreenCaptureStateCodeAdapter capture_state_code_
+      = OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INVLID;
 
   Callback* callback_ = nullptr;
 
