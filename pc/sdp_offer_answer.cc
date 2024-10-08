@@ -5011,7 +5011,7 @@ bool SdpOfferAnswerHandler::UseCandidate(
   RTCError error = cricket::VerifyCandidate(c);
   if (!error.ok()) {
 #if BUILDFLAG(IS_OHOS)
-    RTC_DLOG(LS_VERBOSE) << "Invalid candidate.";
+    RTC_DLOG(LS_VERBOSE) << "Invalid candidate: " << c.ToString();
 #else
     RTC_LOG(LS_WARNING) << "Invalid candidate: " << c.ToString();
 #endif
