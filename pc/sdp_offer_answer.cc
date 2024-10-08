@@ -5010,7 +5010,11 @@ bool SdpOfferAnswerHandler::UseCandidate(
   const cricket::Candidate& c = candidate->candidate();
   RTCError error = cricket::VerifyCandidate(c);
   if (!error.ok()) {
+#if IS_OHOS
+    RTC_LOG(LS_WARNING) << "Invalid candidate.";
+#else
     RTC_LOG(LS_WARNING) << "Invalid candidate: " << c.ToString();
+#endif
     return true;
   }
 
