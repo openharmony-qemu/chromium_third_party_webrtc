@@ -40,6 +40,7 @@
 #include "rtc_base/string_encode.h"
 #include "rtc_base/string_to_number.h"
 #include "rtc_base/time_utils.h"
+#include "third_party/bounds_checking_function/include/securec.h"
 
 namespace webrtc {
 namespace {
@@ -299,7 +300,11 @@ void BaseWindowCapturer::HandleBuffer() {
     return;
   }
   for (int32_t i = 0; i < height; i++) {
-    memcpy(pData, pSrcData, frameStride);
+    if (memcpy_s(pData, frameStride, pSrcData, frameStride) != EOK) {
+      LOG(ERROR) << "data memcpy_s failed";
+      screen_capture_adapter_->ReleaseVideoBuffer();
+      return;
+    }
     pData += frameStride;
     pSrcData += stride;
   }
