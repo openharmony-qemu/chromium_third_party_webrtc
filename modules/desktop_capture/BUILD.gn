@@ -422,6 +422,13 @@ rtc_library("desktop_capture") {
       "ohos/audio_enc_info_adapter_impl.h",
       "ohos/audio_info_adapter_impl.cc",
       "ohos/audio_info_adapter_impl.h",
+      "ohos/audio_buffer_adapter_impl.cc",
+      "ohos/audio_buffer_adapter_impl.h",
+      "ohos/base_audio_capturer_source.cc",
+      "ohos/base_audio_capturer_source.h",
+      "ohos/base_screen_capture_source_bridge.cc",
+      "ohos/base_screen_capture_source_bridge.h",
+      "ohos/base_screen_capture_read_callback.h",      
       "ohos/recorder_info_adapter_impl.cc",
       "ohos/recorder_info_adapter_impl.h",
       "ohos/screen_capture_config_adapter_impl.cc",
@@ -437,6 +444,9 @@ rtc_library("desktop_capture") {
     deps += [
       "//ohos_glue:ohos_adapter_glue_source",
     ]
+    cflags_cc = [
+      "-Wno-exit-time-destructors"
+    ]    
   }
 
   if (!is_ohos && !is_win && !is_mac && !rtc_use_x11_extensions && !rtc_use_pipewire
