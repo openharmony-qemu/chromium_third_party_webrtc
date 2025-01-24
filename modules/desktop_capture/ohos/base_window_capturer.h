@@ -16,12 +16,35 @@
 #include "absl/types/optional.h"
 #include "base/memory/weak_ptr.h"
 #include "base/task/single_thread_task_runner.h"
-#include "modules/desktop_capture/desktop_capture_options.h"
-#include "modules/desktop_capture/desktop_capturer.h"
+#include "third_party/webrtc/modules/desktop_capture/desktop_capture_options.h"
+#include "third_party/webrtc/modules/desktop_capture/desktop_capturer.h"
 #include "ohos_adapter_helper.h"
 #include "rtc_base/synchronization/mutex.h"
+#include "media/base/audio_capturer_source.h"
+#include "third_party/webrtc/modules/desktop_capture/ohos/base_screen_capture_read_callback.h"
+#include "third_party/webrtc/modules/desktop_capture/ohos/base_screen_capture_source_bridge.h"
 
 namespace webrtc {
+class BaseScreenCaptureReadCallback;
+
+using namespace OHOS::NWeb;
+using namespace media;
+
+using OnReadDataCallback = base::RepeatingCallback<void(void)>;
+
+class WindowCapturerReadCallback : public BaseScreenCaptureReadCallback{
+ public:
+  WindowCapturerReadCallback(const OnReadDataCallback& readDataCallback);
+
+  ~WindowCapturerReadCallback();
+
+  void OnReadData() override;
+
+  void OnReadData(OHOS::NWeb::AudioCaptureSourceTypeAdapter type) override {}
+
+ private:
+  OnReadDataCallback readDataCallback_;
+};
 
 class BaseWindowCapturer : public DesktopCapturer {
  public:
@@ -80,8 +103,6 @@ class BaseWindowCapturer : public DesktopCapturer {
 
   std::unique_ptr<SharedMemoryFactory> factory_ = nullptr;
 
-  std::unique_ptr<OHOS::NWeb::ScreenCaptureAdapter> screen_capture_adapter_ = nullptr;
-
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
 
   base::WeakPtrFactory<BaseWindowCapturer> weak_factory_{this};
@@ -89,6 +110,8 @@ class BaseWindowCapturer : public DesktopCapturer {
   bool isStart_ = false;
 
   SourceId selectSourceId_ = -1;
+
+  std::shared_ptr<WindowCapturerReadCallback> WindowCapturerReadCallback_ = nullptr;
 };
 
 }  // namespace webrtc
