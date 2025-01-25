@@ -31,7 +31,7 @@ namespace base {
 class SingleThreadTaskRunner;
 }  // namespace base
 
-namespace webrtc {  
+namespace webrtc {
 
 using namespace OHOS::NWeb;
 using namespace media;
@@ -42,7 +42,7 @@ class BaseScreenCaptureReadCallback;
 
 constexpr int kMaxNumOfBuffer = 2;
 
-class AudioScreenCapturerReadCallback : public BaseScreenCaptureReadCallback{
+class AudioScreenCapturerReadCallback : public BaseScreenCaptureReadCallback {
  public:
   AudioScreenCapturerReadCallback(const OnAudioReadDataCallback& readDataCallback);
 
@@ -56,7 +56,7 @@ class AudioScreenCapturerReadCallback : public BaseScreenCaptureReadCallback{
   OnAudioReadDataCallback readDataCallback_;
 };
 
-class BaseAudioCapturerSource : public AudioCapturerSource{
+class BaseAudioCapturerSource : public AudioCapturerSource {
 public:
 
     BaseAudioCapturerSource(
