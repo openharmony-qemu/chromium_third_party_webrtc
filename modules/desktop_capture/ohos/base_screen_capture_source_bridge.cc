@@ -114,7 +114,8 @@ class OHOSScreenCaptureCallback
     LOG(INFO) << "BaseScreenCaptureSource::~BaseScreenCaptureSource";
   }
 
-  int32_t BaseScreenCaptureSource::RegisterAudioCaptureCallback(std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
+  int32_t BaseScreenCaptureSource::RegisterAudioCaptureCallback(
+    std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
     LOG(INFO) << "BaseScreenCaptureSource::RegisterAduioCaptureCallback start";
     if (!callbck) {
       LOG(ERROR) << "register audio callback is nullptr";
@@ -124,7 +125,8 @@ class OHOSScreenCaptureCallback
     return 0;
   }
 
-  int32_t BaseScreenCaptureSource::RegisterWindowCaptureCallback(std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
+  int32_t BaseScreenCaptureSource::RegisterWindowCaptureCallback(
+    std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
     LOG(INFO) << "BaseScreenCaptureSource::RegisterWindowCaptureCallback start";
     if (!callbck) {
       LOG(ERROR) << "register window callback is nullptr";
