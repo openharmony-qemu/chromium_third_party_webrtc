@@ -137,7 +137,7 @@ BaseWindowCapturer::BaseWindowCapturer(CaptureSourceType source_type)
     return;
   }
 
-  LOG(INFO) << "BaseWindowCapturer, CreateBaseScreenCaptureSource: " 
+  LOG(INFO) << "BaseWindowCapturer, CreateBaseScreenCaptureSource: "
             << &BaseScreenCaptureSource::GetInstance();
   if (!BaseScreenCaptureSource::GetInstance().SetScreenCaptureConfig()) {
       BaseScreenCaptureSource::GetInstance().screen_capture_adapter_ = nullptr;
