@@ -32,7 +32,7 @@ using namespace media;
 
 using OnReadDataCallback = base::RepeatingCallback<void(void)>;
 
-class WindowCapturerReadCallback : public BaseScreenCaptureReadCallback{
+class WindowCapturerReadCallback : public BaseScreenCaptureReadCallback {
  public:
   WindowCapturerReadCallback(const OnReadDataCallback& readDataCallback);
 
