@@ -36,7 +36,7 @@ namespace webrtc {
 
 namespace {
 constexpr int32_t kInnerAudioSampleRate = 48000;
-constexpr int32_t kInnerAudioFrameCount = 960;  
+constexpr int32_t kInnerAudioFrameCount = 960;
 }
 
 AudioScreenCapturerReadCallback::AudioScreenCapturerReadCallback(
