@@ -50,4 +50,4 @@ private:
 
 } // namespace OHOS::NWeb
 
-#endif // AUDIO_BUFFER_ADAPTER_IMPL_H 
+#endif // AUDIO_BUFFER_ADAPTER_IMPL_H
