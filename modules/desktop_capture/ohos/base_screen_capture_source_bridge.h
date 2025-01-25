@@ -80,7 +80,6 @@ private:
     BaseScreenCaptureSource();
     
     ~BaseScreenCaptureSource(); 
-
 };
 }
 
