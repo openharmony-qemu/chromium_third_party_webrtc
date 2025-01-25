@@ -39,6 +39,8 @@ constexpr int32_t kAudioSampleRate = 48000;
 constexpr int32_t kAudioChannels = 2;
 constexpr int32_t kInnerAudioSampleRate = 48000;
 constexpr int32_t kInnerAudioBitrate = 48000;
+constexpr int32_t kVideoBitrate = 2000000;
+constexpr int32_t kVideoFrameRate = 30;
 }
 
 class OHOSScreenCaptureCallback
@@ -203,8 +205,8 @@ class OHOSScreenCaptureCallback
       //setting Video Encoding Information
       std::shared_ptr<OHOS::NWeb::VideoEncInfoAdapterImpl> videoEncInfo =
           std::make_shared<OHOS::NWeb::VideoEncInfoAdapterImpl>();
-      videoEncInfo->SetVideoBitrate(2000000);
-      videoEncInfo->SetVideoFrameRate(30);
+      videoEncInfo->SetVideoBitrate(kVideoBitrate);
+      videoEncInfo->SetVideoFrameRate(kVideoFrameRate);
       videoEncInfo->SetVideoCodecFormat(
           OHOS::NWeb::VideoCodecFormatAdapter::H264);
 
