@@ -31,7 +31,7 @@
 #include "modules/desktop_capture/ohos/screen_capture_config_adapter_impl.h"
 #include "modules/desktop_capture/ohos/video_capture_info_adapter_impl.h"
 #include "modules/desktop_capture/ohos/video_enc_info_adapter_impl.h"
-#include "modules/desktop_capture/ohos/video_info_adapter_impl.h" 
+#include "modules/desktop_capture/ohos/video_info_adapter_impl.h"
 
 namespace webrtc {
 namespace {
@@ -147,7 +147,7 @@ class OHOSScreenCaptureCallback
         return false;
       }
 
-      auto displayMgr = 
+      auto displayMgr =
           OHOS::NWeb::OhosAdapterHelper::GetInstance().CreateDisplayMgrAdapter();
       if (!displayMgr) {
           LOG(ERROR) << "create display manager Adapter failed";
@@ -160,7 +160,7 @@ class OHOSScreenCaptureCallback
       }
       int32_t videoFrameWidth = display->GetWidth();
       int32_t videoFrameHeight = display->GetHeight();
-      LOG(INFO) << "screen capture videoFrameWidth: " << videoFrameWidth 
+      LOG(INFO) << "screen capture videoFrameWidth: " << videoFrameWidth
                 << "; videoFrameHeight: " << videoFrameHeight;
 
       //setting the microphone information
