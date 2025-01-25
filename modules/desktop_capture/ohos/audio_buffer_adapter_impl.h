@@ -23,8 +23,6 @@ class AudioBufferAdapterImpl : public AudioBufferAdapter {
 public:
     AudioBufferAdapterImpl() = default;
 
-    // ~AudioBufferAdapterImpl() override = default;
-
     uint8_t* GetBuffer() override;
 
     int32_t GetLength() override;
