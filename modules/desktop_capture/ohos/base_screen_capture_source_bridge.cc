@@ -31,7 +31,7 @@
 #include "modules/desktop_capture/ohos/screen_capture_config_adapter_impl.h"
 #include "modules/desktop_capture/ohos/video_capture_info_adapter_impl.h"
 #include "modules/desktop_capture/ohos/video_enc_info_adapter_impl.h"
-#include "modules/desktop_capture/ohos/video_info_adapter_impl.h" 
+#include "modules/desktop_capture/ohos/video_info_adapter_impl.h"
 
 namespace webrtc {
 namespace {
@@ -39,6 +39,8 @@ constexpr int32_t kAudioSampleRate = 48000;
 constexpr int32_t kAudioChannels = 2;
 constexpr int32_t kInnerAudioSampleRate = 48000;
 constexpr int32_t kInnerAudioBitrate = 48000;
+constexpr int32_t kVideoBitrate = 2000000;
+constexpr int32_t kVideoFrameRate = 30;
 }
 
 class OHOSScreenCaptureCallback
@@ -112,7 +114,8 @@ class OHOSScreenCaptureCallback
     LOG(INFO) << "BaseScreenCaptureSource::~BaseScreenCaptureSource";
   }
 
-  int32_t BaseScreenCaptureSource::RegisterAudioCaptureCallback(std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
+  int32_t BaseScreenCaptureSource::RegisterAudioCaptureCallback(
+    std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
     LOG(INFO) << "BaseScreenCaptureSource::RegisterAduioCaptureCallback start";
     if (!callbck) {
       LOG(ERROR) << "register audio callback is nullptr";
@@ -122,7 +125,8 @@ class OHOSScreenCaptureCallback
     return 0;
   }
 
-  int32_t BaseScreenCaptureSource::RegisterWindowCaptureCallback(std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
+  int32_t BaseScreenCaptureSource::RegisterWindowCaptureCallback(
+    std::shared_ptr<BaseScreenCaptureReadCallback> callbck) {
     LOG(INFO) << "BaseScreenCaptureSource::RegisterWindowCaptureCallback start";
     if (!callbck) {
       LOG(ERROR) << "register window callback is nullptr";
@@ -147,7 +151,7 @@ class OHOSScreenCaptureCallback
         return false;
       }
 
-      auto displayMgr = 
+      auto displayMgr =
           OHOS::NWeb::OhosAdapterHelper::GetInstance().CreateDisplayMgrAdapter();
       if (!displayMgr) {
           LOG(ERROR) << "create display manager Adapter failed";
@@ -160,7 +164,7 @@ class OHOSScreenCaptureCallback
       }
       int32_t videoFrameWidth = display->GetWidth();
       int32_t videoFrameHeight = display->GetHeight();
-      LOG(INFO) << "screen capture videoFrameWidth: " << videoFrameWidth 
+      LOG(INFO) << "screen capture videoFrameWidth: " << videoFrameWidth
                 << "; videoFrameHeight: " << videoFrameHeight;
 
       //setting the microphone information
@@ -203,8 +207,8 @@ class OHOSScreenCaptureCallback
       //setting Video Encoding Information
       std::shared_ptr<OHOS::NWeb::VideoEncInfoAdapterImpl> videoEncInfo =
           std::make_shared<OHOS::NWeb::VideoEncInfoAdapterImpl>();
-      videoEncInfo->SetVideoBitrate(2000000);
-      videoEncInfo->SetVideoFrameRate(30);
+      videoEncInfo->SetVideoBitrate(kVideoBitrate);
+      videoEncInfo->SetVideoFrameRate(kVideoFrameRate);
       videoEncInfo->SetVideoCodecFormat(
           OHOS::NWeb::VideoCodecFormatAdapter::H264);
 

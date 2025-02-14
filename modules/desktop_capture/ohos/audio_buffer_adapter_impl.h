@@ -23,8 +23,6 @@ class AudioBufferAdapterImpl : public AudioBufferAdapter {
 public:
     AudioBufferAdapterImpl() = default;
 
-    // ~AudioBufferAdapterImpl() override = default;
-
     uint8_t* GetBuffer() override;
 
     int32_t GetLength() override;
@@ -50,4 +48,4 @@ private:
 
 } // namespace OHOS::NWeb
 
-#endif // AUDIO_BUFFER_ADAPTER_IMPL_H 
+#endif // AUDIO_BUFFER_ADAPTER_IMPL_H

@@ -27,7 +27,7 @@ namespace webrtc {
 using namespace OHOS::NWeb;
 using namespace media;
 
-class BaseScreenCaptureReadCallback{
+class BaseScreenCaptureReadCallback {
 public:
 
     BaseScreenCaptureReadCallback() = default;

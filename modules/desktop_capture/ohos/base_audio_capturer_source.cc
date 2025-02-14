@@ -36,7 +36,7 @@ namespace webrtc {
 
 namespace {
 constexpr int32_t kInnerAudioSampleRate = 48000;
-constexpr int32_t kInnerAudioFrameCount = 960;  
+constexpr int32_t kInnerAudioFrameCount = 960;
 }
 
 AudioScreenCapturerReadCallback::AudioScreenCapturerReadCallback(
@@ -88,7 +88,7 @@ void BaseAudioCapturerSource::Initialize(
       std::to_string(1) + "_webrtc_capturer_in.pcm";
   DumpFileUtil::OpenDumpFile(dumpFileName, &dumpFile_);
 
-  DCHECK(capturer_task_runner_->BelongsToCurrentThread()); 
+  DCHECK(capturer_task_runner_->BelongsToCurrentThread());
 
   LOG(INFO) << "BaseAudioCapturerSource init success";
   portal_init_failed_ = false;
@@ -108,7 +108,7 @@ void BaseAudioCapturerSource::Start() {
     return;
   }
   
-  LOG(INFO) << "BaseAudioCapturerSource, CreateBaseScreenCaptureSource: " 
+  LOG(INFO) << "BaseAudioCapturerSource, CreateBaseScreenCaptureSource: "
             << &BaseScreenCaptureSource::GetInstance();
   AudioScreenCapturerReadCallback_ =
       std::make_shared<AudioScreenCapturerReadCallback>(base::BindRepeating(
@@ -149,7 +149,7 @@ void BaseAudioCapturerSource::HandleAudioBuffer(OHOS::NWeb::AudioCaptureSourceTy
     return;
   }
   
-  std::shared_ptr<OHOS::NWeb::AudioBufferAdapterImpl> audiobuffer = 
+  std::shared_ptr<OHOS::NWeb::AudioBufferAdapterImpl> audiobuffer =
         std::make_shared<OHOS::NWeb::AudioBufferAdapterImpl>();
   int ret = BaseScreenCaptureSource::GetInstance().screen_capture_adapter_->AcquireAudioBuffer(audiobuffer, type);
   if (ret != 0) {

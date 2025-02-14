@@ -47,7 +47,7 @@ public:
 
     static BaseScreenCaptureSource& GetInstance() {
         static BaseScreenCaptureSource instance;
-        return instance;  
+        return instance;
     }
 
     bool SetScreenCaptureConfig();
@@ -79,8 +79,7 @@ private:
   
     BaseScreenCaptureSource();
     
-    ~BaseScreenCaptureSource(); 
-
+    ~BaseScreenCaptureSource();
 };
 }
 
