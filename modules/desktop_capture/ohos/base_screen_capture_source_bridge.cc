@@ -73,7 +73,7 @@ class OHOSScreenCaptureCallback
       return;
     }
     if (!BaseScreenCaptureSource::GetInstance().audio_callback_) {
-      LOG(ERROR) << "BaseScreenCaptureSource audio callback is nullptr";
+      LOG(DEBUG) << "BaseScreenCaptureSource audio callback is nullptr";
       return;
     }
 
