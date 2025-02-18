@@ -73,7 +73,7 @@ class OHOSScreenCaptureCallback
       return;
     }
     if (!BaseScreenCaptureSource::GetInstance().audio_callback_) {
-      LOG(ERROR) << "BaseScreenCaptureSource audio callback is nullptr";
+      LOG(DEBUG) << "BaseScreenCaptureSource audio callback is nullptr";
       return;
     }
 
@@ -250,6 +250,7 @@ class OHOSScreenCaptureCallback
     int32_t ret = -1;
     if (screen_capture_adapter_) {
       ret = screen_capture_adapter_->StopCapture();
+      capture_state_code_ = OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INVLID;
     }
     return ret;
   }
