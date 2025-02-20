@@ -100,7 +100,6 @@ private:
     CaptureCallback* base_callback_ = nullptr;
     base::Lock base_callback_lock_;
     base::WeakPtrFactory<BaseAudioCapturerSource> weak_factory_{this};
-    FILE* dumpFile_ = nullptr;
 
     bool isStart_ = false;
     bool portal_init_failed_ = false;
