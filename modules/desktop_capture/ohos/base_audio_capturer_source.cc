@@ -24,7 +24,6 @@
 #include "chrome/common/chrome_switches.h"
 #include "media/base/audio_parameters.h"
 #include "modules/desktop_capture/ohos/audio_buffer_adapter_impl.h"
-#include "media/audio/ohos/audio_dump.h"
 #include "media/base/audio_bus.h"
 #include "modules/desktop_capture/ohos/audio_capture_info_adapter_impl.h"
 #include "modules/desktop_capture/ohos/audio_enc_info_adapter_impl.h"
@@ -35,7 +34,6 @@
 namespace webrtc {
 
 namespace {
-constexpr int32_t kInnerAudioSampleRate = 48000;
 constexpr int32_t kInnerAudioFrameCount = 960;
 }
 
@@ -80,13 +78,6 @@ void BaseAudioCapturerSource::Initialize(
     ReportError("Only AUDIO_PCM_LOW_LATENCY format is supported");
     return;
   }
-
-  time_t now = time(nullptr);
-  std::string dumpFileName = std::to_string(now) + "_" +
-      std::to_string(kInnerAudioSampleRate) + "_" +
-      std::to_string(params_.channels()) + "_" +
-      std::to_string(1) + "_webrtc_capturer_in.pcm";
-  DumpFileUtil::OpenDumpFile(dumpFileName, &dumpFile_);
 
   DCHECK(capturer_task_runner_->BelongsToCurrentThread());
 
@@ -137,8 +128,6 @@ void BaseAudioCapturerSource::Stop() {
   }
 
   DCHECK(capturer_task_runner_->BelongsToCurrentThread());
-
-  DumpFileUtil::CloseDumpFile(&dumpFile_);
 }
 
 void BaseAudioCapturerSource::HandleAudioBuffer(OHOS::NWeb::AudioCaptureSourceTypeAdapter type) {
@@ -172,7 +161,6 @@ void BaseAudioCapturerSource::HandleAudioBuffer(OHOS::NWeb::AudioCaptureSourceTy
       static_cast<int>(kInnerAudioFrameCount));
   if (base_callback_) {
     base_callback_->Capture(audio_bus.get(), timeStamp, 1.0, false);
-    DumpFileUtil::WriteDumpFile(dumpFile_, audiobuffer->GetBuffer(), audiobuffer->GetLength());
   }
 
   BaseScreenCaptureSource::GetInstance().screen_capture_adapter_->ReleaseAudioBuffer(type);
