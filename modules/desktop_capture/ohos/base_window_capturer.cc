@@ -43,7 +43,6 @@
 #include "third_party/bounds_checking_function/include/securec.h"
 #include "modules/desktop_capture/ohos/base_audio_capturer_source.h"
 #include "modules/desktop_capture/ohos/audio_buffer_adapter_impl.h"
-#include "media/audio/ohos/audio_dump.h"
 #include "media/base/audio_bus.h"
 
 namespace webrtc {
