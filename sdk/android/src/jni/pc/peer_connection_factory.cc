@@ -14,21 +14,15 @@
 #include <utility>
 
 #include "absl/memory/memory.h"
-#include "api/video_codecs/video_decoder_factory.h"
-#include "api/video_codecs/video_encoder_factory.h"
-#include "media/base/media_engine.h"
-#include "modules/audio_device/include/audio_device.h"
-#include "modules/utility/include/jvm_android.h"
-// We don't depend on the audio processing module implementation.
-// The user may pass in a nullptr.
-#include "api/call/call_factory_interface.h"
+#include "api/audio/audio_device.h"
+#include "api/audio/audio_processing.h"
+#include "api/audio/builtin_audio_processing_builder.h"
+#include "api/enable_media.h"
 #include "api/rtc_event_log/rtc_event_log_factory.h"
 #include "api/task_queue/default_task_queue_factory.h"
 #include "api/video_codecs/video_decoder_factory.h"
 #include "api/video_codecs/video_encoder_factory.h"
-#include "media/engine/webrtc_media_engine.h"
-#include "modules/audio_device/include/audio_device.h"
-#include "modules/audio_processing/include/audio_processing.h"
+#include "modules/utility/include/jvm_android.h"
 #include "rtc_base/event_tracer.h"
 #include "rtc_base/physical_socket_server.h"
 #include "rtc_base/thread.h"
@@ -38,13 +32,15 @@
 #include "sdk/android/src/jni/jni_helpers.h"
 #include "sdk/android/src/jni/logging/log_sink.h"
 #include "sdk/android/src/jni/pc/android_network_monitor.h"
-#include "sdk/android/src/jni/pc/audio.h"
 #include "sdk/android/src/jni/pc/ice_candidate.h"
+#include "sdk/android/src/jni/pc/media_stream_track.h"
 #include "sdk/android/src/jni/pc/owned_factory_and_threads.h"
 #include "sdk/android/src/jni/pc/peer_connection.h"
+#include "sdk/android/src/jni/pc/rtp_capabilities.h"
 #include "sdk/android/src/jni/pc/ssl_certificate_verifier_wrapper.h"
 #include "sdk/android/src/jni/pc/video.h"
 #include "system_wrappers/include/field_trial.h"
+#include "third_party/jni_zero/jni_zero.h"
 
 namespace webrtc {
 namespace jni {
@@ -66,25 +62,26 @@ std::unique_ptr<T> TakeOwnershipOfUniquePtr(jlong native_pointer) {
   return std::unique_ptr<T>(reinterpret_cast<T*>(native_pointer));
 }
 
-typedef void (*JavaMethodPointer)(JNIEnv*, const JavaRef<jobject>&);
+typedef void (*JavaMethodPointer)(JNIEnv*, const jni_zero::JavaRef<jobject>&);
 
 // Post a message on the given thread that will call the Java method on the
 // given Java object.
 void PostJavaCallback(JNIEnv* env,
                       rtc::Thread* queue,
-                      const JavaRef<jobject>& j_object,
+                      const jni_zero::JavaRef<jobject>& j_object,
                       JavaMethodPointer java_method_pointer) {
-  ScopedJavaGlobalRef<jobject> object(env, j_object);
+  jni_zero::ScopedJavaGlobalRef<jobject> object(env, j_object);
   queue->PostTask([object = std::move(object), java_method_pointer] {
     java_method_pointer(AttachCurrentThreadIfNeeded(), object);
   });
 }
 
-absl::optional<PeerConnectionFactoryInterface::Options>
-JavaToNativePeerConnectionFactoryOptions(JNIEnv* jni,
-                                         const JavaRef<jobject>& j_options) {
+std::optional<PeerConnectionFactoryInterface::Options>
+JavaToNativePeerConnectionFactoryOptions(
+    JNIEnv* jni,
+    const jni_zero::JavaRef<jobject>& j_options) {
   if (j_options.is_null())
-    return absl::nullopt;
+    return std::nullopt;
 
   PeerConnectionFactoryInterface::Options native_options;
 
@@ -125,8 +122,9 @@ ScopedJavaLocalRef<jobject> NativeToScopedJavaPeerConnectionFactory(
       std::move(socket_factory), std::move(network_thread),
       std::move(worker_thread), std::move(signaling_thread), pcf);
 
-  ScopedJavaLocalRef<jobject> j_pcf = Java_PeerConnectionFactory_Constructor(
-      env, NativeToJavaPointer(owned_factory));
+  jni_zero::ScopedJavaLocalRef<jobject> j_pcf =
+      Java_PeerConnectionFactory_Constructor(
+          env, NativeToJavaPointer(owned_factory));
 
   PostJavaCallback(env, owned_factory->network_thread(), j_pcf,
                    &Java_PeerConnectionFactory_onNetworkThreadReady);
@@ -175,7 +173,7 @@ static void JNI_PeerConnectionFactory_InitializeAndroidGlobals(JNIEnv* jni) {
 
 static void JNI_PeerConnectionFactory_InitializeFieldTrials(
     JNIEnv* jni,
-    const JavaParamRef<jstring>& j_trials_init_string) {
+    const jni_zero::JavaParamRef<jstring>& j_trials_init_string) {
   std::unique_ptr<std::string>& field_trials_init_string =
       GetStaticObjects().field_trials_init_string;
 
@@ -194,17 +192,17 @@ static void JNI_PeerConnectionFactory_InitializeInternalTracer(JNIEnv* jni) {
   rtc::tracing::SetupInternalTracer();
 }
 
-static ScopedJavaLocalRef<jstring>
+static jni_zero::ScopedJavaLocalRef<jstring>
 JNI_PeerConnectionFactory_FindFieldTrialsFullName(
     JNIEnv* jni,
-    const JavaParamRef<jstring>& j_name) {
+    const jni_zero::JavaParamRef<jstring>& j_name) {
   return NativeToJavaString(
       jni, field_trial::FindFullName(JavaToStdString(jni, j_name)));
 }
 
 static jboolean JNI_PeerConnectionFactory_StartInternalTracingCapture(
     JNIEnv* jni,
-    const JavaParamRef<jstring>& j_event_tracing_filename) {
+    const jni_zero::JavaParamRef<jstring>& j_event_tracing_filename) {
   if (j_event_tracing_filename.is_null())
     return false;
 
@@ -230,13 +228,13 @@ static void JNI_PeerConnectionFactory_ShutdownInternalTracer(JNIEnv* jni) {
 // `network_state_predictor_factory`, `neteq_factory`.
 ScopedJavaLocalRef<jobject> CreatePeerConnectionFactoryForJava(
     JNIEnv* jni,
-    const JavaParamRef<jobject>& jcontext,
-    const JavaParamRef<jobject>& joptions,
+    const jni_zero::JavaParamRef<jobject>& jcontext,
+    const jni_zero::JavaParamRef<jobject>& joptions,
     rtc::scoped_refptr<AudioDeviceModule> audio_device_module,
     rtc::scoped_refptr<AudioEncoderFactory> audio_encoder_factory,
     rtc::scoped_refptr<AudioDecoderFactory> audio_decoder_factory,
-    const JavaParamRef<jobject>& jencoder_factory,
-    const JavaParamRef<jobject>& jdecoder_factory,
+    const jni_zero::JavaParamRef<jobject>& jencoder_factory,
+    const jni_zero::JavaParamRef<jobject>& jdecoder_factory,
     rtc::scoped_refptr<AudioProcessing> audio_processor,
     std::unique_ptr<FecControllerFactoryInterface> fec_controller_factory,
     std::unique_ptr<NetworkControllerFactoryInterface>
@@ -264,7 +262,7 @@ ScopedJavaLocalRef<jobject> CreatePeerConnectionFactoryForJava(
   signaling_thread->SetName("signaling_thread", NULL);
   RTC_CHECK(signaling_thread->Start()) << "Failed to start thread";
 
-  const absl::optional<PeerConnectionFactoryInterface::Options> options =
+  const std::optional<PeerConnectionFactoryInterface::Options> options =
       JavaToNativePeerConnectionFactoryOptions(jni, joptions);
 
   PeerConnectionFactoryDependencies dependencies;
@@ -274,9 +272,7 @@ ScopedJavaLocalRef<jobject> CreatePeerConnectionFactoryForJava(
   dependencies.worker_thread = worker_thread.get();
   dependencies.signaling_thread = signaling_thread.get();
   dependencies.task_queue_factory = CreateDefaultTaskQueueFactory();
-  dependencies.call_factory = CreateCallFactory();
-  dependencies.event_log_factory = std::make_unique<RtcEventLogFactory>(
-      dependencies.task_queue_factory.get());
+  dependencies.event_log_factory = std::make_unique<RtcEventLogFactory>();
   dependencies.fec_controller_factory = std::move(fec_controller_factory);
   dependencies.network_controller_factory =
       std::move(network_controller_factory);
@@ -288,18 +284,23 @@ ScopedJavaLocalRef<jobject> CreatePeerConnectionFactoryForJava(
         std::make_unique<AndroidNetworkMonitorFactory>();
   }
 
-  cricket::MediaEngineDependencies media_dependencies;
-  media_dependencies.task_queue_factory = dependencies.task_queue_factory.get();
-  media_dependencies.adm = std::move(audio_device_module);
-  media_dependencies.audio_encoder_factory = std::move(audio_encoder_factory);
-  media_dependencies.audio_decoder_factory = std::move(audio_decoder_factory);
-  media_dependencies.audio_processing = std::move(audio_processor);
-  media_dependencies.video_encoder_factory =
+  dependencies.adm = std::move(audio_device_module);
+  dependencies.audio_encoder_factory = std::move(audio_encoder_factory);
+  dependencies.audio_decoder_factory = std::move(audio_decoder_factory);
+  if (audio_processor != nullptr) {
+    dependencies.audio_processing_builder =
+        CustomAudioProcessing(std::move(audio_processor));
+#ifndef WEBRTC_EXCLUDE_AUDIO_PROCESSING_MODULE
+  } else {
+    dependencies.audio_processing_builder =
+        std::make_unique<webrtc::BuiltinAudioProcessingBuilder>();
+#endif
+  }
+  dependencies.video_encoder_factory =
       absl::WrapUnique(CreateVideoEncoderFactory(jni, jencoder_factory));
-  media_dependencies.video_decoder_factory =
+  dependencies.video_decoder_factory =
       absl::WrapUnique(CreateVideoDecoderFactory(jni, jdecoder_factory));
-  dependencies.media_engine =
-      cricket::CreateMediaEngine(std::move(media_dependencies));
+  EnableMedia(dependencies);
 
   rtc::scoped_refptr<PeerConnectionFactoryInterface> factory =
       CreateModularPeerConnectionFactory(std::move(dependencies));
@@ -316,16 +317,16 @@ ScopedJavaLocalRef<jobject> CreatePeerConnectionFactoryForJava(
       std::move(worker_thread), std::move(signaling_thread));
 }
 
-static ScopedJavaLocalRef<jobject>
+static jni_zero::ScopedJavaLocalRef<jobject>
 JNI_PeerConnectionFactory_CreatePeerConnectionFactory(
     JNIEnv* jni,
-    const JavaParamRef<jobject>& jcontext,
-    const JavaParamRef<jobject>& joptions,
+    const jni_zero::JavaParamRef<jobject>& jcontext,
+    const jni_zero::JavaParamRef<jobject>& joptions,
     jlong native_audio_device_module,
     jlong native_audio_encoder_factory,
     jlong native_audio_decoder_factory,
-    const JavaParamRef<jobject>& jencoder_factory,
-    const JavaParamRef<jobject>& jdecoder_factory,
+    const jni_zero::JavaParamRef<jobject>& jencoder_factory,
+    const jni_zero::JavaParamRef<jobject>& jdecoder_factory,
     jlong native_audio_processor,
     jlong native_fec_controller_factory,
     jlong native_network_controller_factory,
@@ -339,8 +340,7 @@ JNI_PeerConnectionFactory_CreatePeerConnectionFactory(
           reinterpret_cast<AudioDeviceModule*>(native_audio_device_module)),
       TakeOwnershipOfRefPtr<AudioEncoderFactory>(native_audio_encoder_factory),
       TakeOwnershipOfRefPtr<AudioDecoderFactory>(native_audio_decoder_factory),
-      jencoder_factory, jdecoder_factory,
-      audio_processor ? audio_processor : CreateAudioProcessing(),
+      jencoder_factory, jdecoder_factory, std::move(audio_processor),
       TakeOwnershipOfUniquePtr<FecControllerFactoryInterface>(
           native_fec_controller_factory),
       TakeOwnershipOfUniquePtr<NetworkControllerFactoryInterface>(
@@ -359,7 +359,7 @@ static void JNI_PeerConnectionFactory_FreeFactory(JNIEnv*, jlong j_p) {
 static jlong JNI_PeerConnectionFactory_CreateLocalMediaStream(
     JNIEnv* jni,
     jlong native_factory,
-    const JavaParamRef<jstring>& label) {
+    const jni_zero::JavaParamRef<jstring>& label) {
   rtc::scoped_refptr<MediaStreamInterface> stream(
       PeerConnectionFactoryFromJava(native_factory)
           ->CreateLocalMediaStream(JavaToStdString(jni, label)));
@@ -369,7 +369,7 @@ static jlong JNI_PeerConnectionFactory_CreateLocalMediaStream(
 static jlong JNI_PeerConnectionFactory_CreateAudioSource(
     JNIEnv* jni,
     jlong native_factory,
-    const JavaParamRef<jobject>& j_constraints) {
+    const jni_zero::JavaParamRef<jobject>& j_constraints) {
   std::unique_ptr<MediaConstraints> constraints =
       JavaToNativeMediaConstraints(jni, j_constraints);
   cricket::AudioOptions options;
@@ -383,7 +383,7 @@ static jlong JNI_PeerConnectionFactory_CreateAudioSource(
 jlong JNI_PeerConnectionFactory_CreateAudioTrack(
     JNIEnv* jni,
     jlong native_factory,
-    const JavaParamRef<jstring>& id,
+    const jni_zero::JavaParamRef<jstring>& id,
     jlong native_source) {
   rtc::scoped_refptr<AudioTrackInterface> track(
       PeerConnectionFactoryFromJava(native_factory)
@@ -391,6 +391,27 @@ jlong JNI_PeerConnectionFactory_CreateAudioTrack(
               JavaToStdString(jni, id),
               reinterpret_cast<AudioSourceInterface*>(native_source)));
   return jlongFromPointer(track.release());
+}
+
+ScopedJavaLocalRef<jobject> JNI_PeerConnectionFactory_GetRtpSenderCapabilities(
+    JNIEnv* jni,
+    jlong native_factory,
+    const jni_zero::JavaParamRef<jobject>& media_type) {
+  auto factory = PeerConnectionFactoryFromJava(native_factory);
+  return NativeToJavaRtpCapabilities(
+      jni, factory->GetRtpSenderCapabilities(
+               JavaToNativeMediaType(jni, media_type)));
+}
+
+ScopedJavaLocalRef<jobject>
+JNI_PeerConnectionFactory_GetRtpReceiverCapabilities(
+    JNIEnv* jni,
+    jlong native_factory,
+    const jni_zero::JavaParamRef<jobject>& media_type) {
+  auto factory = PeerConnectionFactoryFromJava(native_factory);
+  return NativeToJavaRtpCapabilities(
+      jni, factory->GetRtpReceiverCapabilities(
+               JavaToNativeMediaType(jni, media_type)));
 }
 
 static jboolean JNI_PeerConnectionFactory_StartAecDump(
@@ -416,10 +437,10 @@ static void JNI_PeerConnectionFactory_StopAecDump(JNIEnv* jni,
 static jlong JNI_PeerConnectionFactory_CreatePeerConnection(
     JNIEnv* jni,
     jlong factory,
-    const JavaParamRef<jobject>& j_rtc_config,
-    const JavaParamRef<jobject>& j_constraints,
+    const jni_zero::JavaParamRef<jobject>& j_rtc_config,
+    const jni_zero::JavaParamRef<jobject>& j_constraints,
     jlong observer_p,
-    const JavaParamRef<jobject>& j_sslCertificateVerifier) {
+    const jni_zero::JavaParamRef<jobject>& j_sslCertificateVerifier) {
   std::unique_ptr<PeerConnectionObserver> observer(
       reinterpret_cast<PeerConnectionObserver*>(observer_p));
 
@@ -433,7 +454,7 @@ static jlong JNI_PeerConnectionFactory_CreatePeerConnection(
     if (key_type != rtc::KT_DEFAULT) {
       rtc::scoped_refptr<rtc::RTCCertificate> certificate =
           rtc::RTCCertificateGenerator::GenerateCertificate(
-              rtc::KeyParams(key_type), absl::nullopt);
+              rtc::KeyParams(key_type), std::nullopt);
       if (!certificate) {
         RTC_LOG(LS_ERROR) << "Failed to generate certificate. KeyType: "
                           << key_type;
@@ -481,7 +502,7 @@ static jlong JNI_PeerConnectionFactory_CreateVideoSource(
 static jlong JNI_PeerConnectionFactory_CreateVideoTrack(
     JNIEnv* jni,
     jlong native_factory,
-    const JavaParamRef<jstring>& id,
+    const jni_zero::JavaParamRef<jstring>& id,
     jlong native_source) {
   rtc::scoped_refptr<VideoTrackInterface> track =
       PeerConnectionFactoryFromJava(native_factory)
@@ -500,7 +521,7 @@ static jlong JNI_PeerConnectionFactory_GetNativePeerConnectionFactory(
 
 static void JNI_PeerConnectionFactory_InjectLoggable(
     JNIEnv* jni,
-    const JavaParamRef<jobject>& j_logging,
+    const jni_zero::JavaParamRef<jobject>& j_logging,
     jint nativeSeverity) {
   std::unique_ptr<JNILogSink>& jni_log_sink = GetStaticObjects().jni_log_sink;
 
