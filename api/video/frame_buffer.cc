@@ -11,9 +11,18 @@
 #include "api/video/frame_buffer.h"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <iterator>
+#include <memory>
+#include <optional>
+#include <utility>
 
 #include "absl/algorithm/container.h"
 #include "absl/container/inlined_vector.h"
+#include "api/array_view.h"
+#include "api/field_trials_view.h"
+#include "api/video/encoded_frame.h"
 #include "rtc_base/logging.h"
 #include "rtc_base/numerics/sequence_number_util.h"
 
@@ -50,7 +59,7 @@ int64_t GetFrameId(const FrameIteratorT& it) {
 
 template <typename FrameIteratorT>
 uint32_t GetTimestamp(const FrameIteratorT& it) {
-  return it->second.encoded_frame->Timestamp();
+  return it->second.encoded_frame->RtpTimestamp();
 }
 
 template <typename FrameIteratorT>
@@ -76,7 +85,7 @@ bool FrameBuffer::InsertFrame(std::unique_ptr<EncodedFrame> frame) {
 
   if (frame->Id() <= decoded_frame_history_.GetLastDecodedFrameId()) {
     if (legacy_frame_id_jump_behavior_ && frame->is_keyframe() &&
-        AheadOf(frame->Timestamp(),
+        AheadOf(frame->RtpTimestamp(),
                 *decoded_frame_history_.GetLastDecodedFrameTimestamp())) {
       RTC_DLOG(LS_WARNING)
           << "Keyframe " << frame->Id()
@@ -148,15 +157,15 @@ void FrameBuffer::DropNextDecodableTemporalUnit() {
   FindNextAndLastDecodableTemporalUnit();
 }
 
-absl::optional<int64_t> FrameBuffer::LastContinuousFrameId() const {
+std::optional<int64_t> FrameBuffer::LastContinuousFrameId() const {
   return last_continuous_frame_id_;
 }
 
-absl::optional<int64_t> FrameBuffer::LastContinuousTemporalUnitFrameId() const {
+std::optional<int64_t> FrameBuffer::LastContinuousTemporalUnitFrameId() const {
   return last_continuous_temporal_unit_frame_id_;
 }
 
-absl::optional<FrameBuffer::DecodabilityInfo>
+std::optional<FrameBuffer::DecodabilityInfo>
 FrameBuffer::DecodableTemporalUnitsInfo() const {
   return decodable_temporal_units_info_;
 }

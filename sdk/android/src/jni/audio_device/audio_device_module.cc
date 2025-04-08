@@ -353,7 +353,7 @@ class AndroidAudioDeviceModule : public AudioDeviceModule {
     RTC_DLOG(LS_INFO) << __FUNCTION__;
     if (!initialized_)
       return -1;
-    absl::optional<uint32_t> volume = output_->SpeakerVolume();
+    std::optional<uint32_t> volume = output_->SpeakerVolume();
     if (!volume)
       return -1;
     *output_volume = *volume;
@@ -365,7 +365,7 @@ class AndroidAudioDeviceModule : public AudioDeviceModule {
     RTC_DLOG(LS_INFO) << __FUNCTION__;
     if (!initialized_)
       return -1;
-    absl::optional<uint32_t> max_volume = output_->MaxSpeakerVolume();
+    std::optional<uint32_t> max_volume = output_->MaxSpeakerVolume();
     if (!max_volume)
       return -1;
     *output_max_volume = *max_volume;
@@ -376,7 +376,7 @@ class AndroidAudioDeviceModule : public AudioDeviceModule {
     RTC_DLOG(LS_INFO) << __FUNCTION__;
     if (!initialized_)
       return -1;
-    absl::optional<uint32_t> min_volume = output_->MinSpeakerVolume();
+    std::optional<uint32_t> min_volume = output_->MinSpeakerVolume();
     if (!min_volume)
       return -1;
     *output_min_volume = *min_volume;
@@ -575,6 +575,12 @@ class AndroidAudioDeviceModule : public AudioDeviceModule {
     return output_->GetPlayoutUnderrunCount();
   }
 
+  std::optional<Stats> GetStats() const override {
+    if (!initialized_)
+      return std::nullopt;
+    return output_->GetStats();
+  }
+
   int32_t AttachAudioBuffer() {
     RTC_DLOG(LS_INFO) << __FUNCTION__;
     output_->AttachAudioBuffer(audio_device_buffer_.get());
@@ -631,6 +637,14 @@ void GetAudioParameters(JNIEnv* env,
                           static_cast<size_t>(input_buffer_size));
   RTC_CHECK(input_parameters->is_valid());
   RTC_CHECK(output_parameters->is_valid());
+}
+
+bool IsLowLatencyInputSupported(JNIEnv* env, const JavaRef<jobject>& j_context) {
+  return Java_WebRtcAudioManager_isLowLatencyInputSupported(env, j_context);
+}
+
+bool IsLowLatencyOutputSupported(JNIEnv* env, const JavaRef<jobject>& j_context) {
+  return Java_WebRtcAudioManager_isLowLatencyOutputSupported(env, j_context);
 }
 
 rtc::scoped_refptr<AudioDeviceModule> CreateAudioDeviceModuleFromInputAndOutput(
