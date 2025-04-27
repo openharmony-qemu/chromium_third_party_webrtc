@@ -66,14 +66,14 @@ public:
 
     scoped_refptr<base::SingleThreadTaskRunner> main_task_runner_;
 
-    base::WeakPtrFactory<BaseScreenCaptureSource> weak_factory_{this};
-
     std::shared_ptr<BaseScreenCaptureReadCallback> audio_callback_ = nullptr;
 
     std::shared_ptr<BaseScreenCaptureReadCallback> window_callback_ = nullptr;
 
     OHOS::NWeb::ScreenCaptureStateCodeAdapter capture_state_code_
       = OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INVLID;
+
+    base::WeakPtrFactory<BaseScreenCaptureSource> weak_factory_{this};
 
 private:
   
