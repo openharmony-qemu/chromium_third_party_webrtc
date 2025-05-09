@@ -105,13 +105,13 @@ class BaseWindowCapturer : public DesktopCapturer {
 
   scoped_refptr<base::SingleThreadTaskRunner> task_runner_;
 
-  base::WeakPtrFactory<BaseWindowCapturer> weak_factory_{this};
-
   bool isStart_ = false;
 
   SourceId selectSourceId_ = -1;
 
   std::shared_ptr<WindowCapturerReadCallback> WindowCapturerReadCallback_ = nullptr;
+
+  base::WeakPtrFactory<BaseWindowCapturer> weak_factory_{this};
 };
 
 }  // namespace webrtc

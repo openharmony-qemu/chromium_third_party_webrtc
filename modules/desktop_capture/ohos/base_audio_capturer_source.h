@@ -99,7 +99,6 @@ private:
     AudioParameters params_;
     CaptureCallback* base_callback_ = nullptr;
     base::Lock base_callback_lock_;
-    base::WeakPtrFactory<BaseAudioCapturerSource> weak_factory_{this};
     FILE* dumpFile_ = nullptr;
 
     bool isStart_ = false;
@@ -108,6 +107,7 @@ private:
         = OHOS::NWeb::ScreenCaptureStateCodeAdapter::SCREEN_CAPTURE_STATE_INVLID;
     
     std::shared_ptr<AudioScreenCapturerReadCallback> AudioScreenCapturerReadCallback_ = nullptr;
+    base::WeakPtrFactory<BaseAudioCapturerSource> weak_factory_{this};
 };
 
 }  // namespace media
