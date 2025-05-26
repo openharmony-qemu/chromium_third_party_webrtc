@@ -445,8 +445,8 @@ rtc_library("desktop_capture") {
   }
 
   if(arkweb_webrtc) {
-    import("//arkweb/chromium_ext/third_party/webrtc/modules/desktop_capture/ohos/arkweb_third_party_webrtc_modules_desktop_capture_ohos_ext.gin")
-    import("//arkweb/chromium_ext/third_party/webrtc/modules/desktop_capture/arkweb_third_party_webrtc_modules_desktop_capture_ext.gin")
+    import("//arkweb/chromium_ext/third_party/webrtc/modules/desktop_capture/ohos/arkweb_third_party_webrtc_modules_desktop_capture_ohos_ext.gni")
+    import("//arkweb/chromium_ext/third_party/webrtc/modules/desktop_capture/arkweb_third_party_webrtc_modules_desktop_capture_ext.gni")
     sources += arkweb_third_party_webrtc_modules_desktop_capture_ohos_sources
     sources += arkweb_third_party_webrtc_modules_desktop_capture_sources
 
@@ -454,6 +454,10 @@ rtc_library("desktop_capture") {
     #libs += [ "nweb_ohos_adapter.z" ]
     libs += ["ohcamera"]
     deps += [ "//ohos/adapter" ]
+
+    cflags_cc = [
+      "-Wno-exit-time-destructors"
+    ]
   }
 
   if (!is_ohos && !is_win && !is_mac && !rtc_use_x11_extensions && !rtc_use_pipewire &&
