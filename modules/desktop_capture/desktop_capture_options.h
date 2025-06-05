@@ -228,6 +228,10 @@ class RTC_EXPORT DesktopCaptureOptions {
     return pipewire_use_damage_region_;
   }
 #endif
+#if defined(WEBRTC_OHOS)
+  bool allow_sync_capturer() const { return allow_sync_capturer_; }
+  void set_allow_sync_capturer(bool allow) { allow_sync_capturer_ = allow; }
+#endif
 
  private:
 #if defined(WEBRTC_USE_X11)
@@ -271,6 +275,9 @@ class RTC_EXPORT DesktopCaptureOptions {
   bool pipewire_use_damage_region_ = true;
   uint32_t width_ = 0;
   uint32_t height_ = 0;
+#endif
+#if defined(WEBRTC_OHOS)
+  bool allow_sync_capturer_ = false;
 #endif
 };
 
