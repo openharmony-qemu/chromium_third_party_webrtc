@@ -452,7 +452,7 @@ rtc_library("desktop_capture") {
 
     include_dirs = ohos_src_includes
     #libs += [ "nweb_ohos_adapter.z" ]
-    #libs += ["ohcamera"]
+    libs += ["ohcamera"]
     deps += [ "//ohos/adapter" ]
 
     cflags_cc = [
