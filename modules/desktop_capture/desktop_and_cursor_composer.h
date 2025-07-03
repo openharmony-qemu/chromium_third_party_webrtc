@@ -53,6 +53,9 @@ class RTC_EXPORT DesktopAndCursorComposer
 
   // DesktopCapturer interface.
   void Start(DesktopCapturer::Callback* callback) override;
+#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
+  void Stop() override;
+#endif
   void SetSharedMemoryFactory(
       std::unique_ptr<SharedMemoryFactory> shared_memory_factory) override;
   void CaptureFrame() override;
