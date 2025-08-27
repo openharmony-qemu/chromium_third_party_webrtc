@@ -18,7 +18,6 @@
 #include <ctime>
 
 #include "base/command_line.h"
-#include "base/hash/hash.h"
 #include "base/location.h"
 #include "base/logging.h"
 #include "base/task/task_runner.h"
@@ -100,8 +99,6 @@ void BaseAudioCapturerSource::Start() {
     return;
   }
   
-  LOG(INFO) << "BaseAudioCapturerSource, CreateBaseScreenCaptureSource: hash="
-            << std::hex << base::FastHash(base::byte_span_from_ref(&BaseScreenCaptureSource::GetInstance()));
   AudioScreenCapturerReadCallback_ =
       std::make_shared<AudioScreenCapturerReadCallback>(base::BindRepeating(
           &BaseAudioCapturerSource::HandleAudioBuffer, weak_factory_.GetWeakPtr()));
