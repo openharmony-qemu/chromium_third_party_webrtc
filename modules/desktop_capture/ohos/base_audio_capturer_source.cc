@@ -99,8 +99,6 @@ void BaseAudioCapturerSource::Start() {
     return;
   }
   
-  LOG(INFO) << "BaseAudioCapturerSource, CreateBaseScreenCaptureSource: "
-            << &BaseScreenCaptureSource::GetInstance();
   AudioScreenCapturerReadCallback_ =
       std::make_shared<AudioScreenCapturerReadCallback>(base::BindRepeating(
           &BaseAudioCapturerSource::HandleAudioBuffer, weak_factory_.GetWeakPtr()));
@@ -146,10 +144,10 @@ void BaseAudioCapturerSource::HandleAudioBuffer(OHOS::NWeb::AudioCaptureSourceTy
     return;
   }
 
-  OHOS::NWeb::AudioCaptureSourceTypeAdapter sourcetype = audiobuffer->GetSourcetype();
-  if (sourcetype != type) {
-    LOG(ERROR) << "buffer type error, sourcetype: " << (int32_t)sourcetype;
-    BaseScreenCaptureSource::GetInstance().screen_capture_adapter_->ReleaseAudioBuffer(sourcetype);
+  OHOS::NWeb::AudioCaptureSourceTypeAdapter source_type = audiobuffer->GetSourcetype();
+  if (source_type != type) {
+    LOG(ERROR) << "buffer type error, source_type: " << (int32_t)source_type;
+    BaseScreenCaptureSource::GetInstance().screen_capture_adapter_->ReleaseAudioBuffer(source_type);
     return;
   }
 
