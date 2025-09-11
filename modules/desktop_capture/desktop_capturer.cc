@@ -90,15 +90,8 @@ std::unique_ptr<DesktopCapturer> DesktopCapturer::CreateWindowCapturer(
 }
 
 // static
-#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
-void DesktopCapturer::Stop() {}
-std::unique_ptr<DesktopCapturer> DesktopCapturer::CreateScreenCapturer(
-    const DesktopCaptureOptions& options,
-    base::OnceCallback<void(uint64_t displayId)> callback) {
-#else
 std::unique_ptr<DesktopCapturer> DesktopCapturer::CreateScreenCapturer(
     const DesktopCaptureOptions& options) {
-#endif
 #if defined(RTC_ENABLE_WIN_WGC)
   if (options.allow_wgc_screen_capturer() &&
       IsWgcSupported(CaptureType::kScreen)) {
@@ -106,12 +99,7 @@ std::unique_ptr<DesktopCapturer> DesktopCapturer::CreateScreenCapturer(
   }
 #endif  // defined(RTC_ENABLE_WIN_WGC)
 
-#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
-  std::unique_ptr<DesktopCapturer> capturer =
-      CreateRawScreenCapturer(options, std::move(callback));
-#else
   std::unique_ptr<DesktopCapturer> capturer = CreateRawScreenCapturer(options);
-#endif
   if (capturer && options.detect_updated_region()) {
     capturer.reset(new DesktopCapturerDifferWrapper(std::move(capturer)));
   }
