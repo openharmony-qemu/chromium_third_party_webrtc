@@ -195,15 +195,6 @@ void DesktopAndCursorComposer::Start(DesktopCapturer::Callback* callback) {
   desktop_capturer_->Start(this);
 }
 
-#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
-void DesktopAndCursorComposer::Stop() {
-  if (desktop_capturer_ == nullptr) {
-    return;
-  }
-  desktop_capturer_->Stop();
-}
-#endif
-
 void DesktopAndCursorComposer::SetMaxFrameRate(uint32_t max_frame_rate) {
   desktop_capturer_->SetMaxFrameRate(max_frame_rate);
 }
