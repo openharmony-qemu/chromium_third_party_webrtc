@@ -29,7 +29,6 @@
 #include "modules/desktop_capture/desktop_frame.h"
 #include "modules/desktop_capture/shared_memory.h"
 #include "rtc_base/system/rtc_export.h"
-#include "base/functional/callback.h"
 
 namespace webrtc {
 
@@ -106,9 +105,6 @@ class RTC_EXPORT DesktopCapturer {
   // valid until capturer is destroyed.
   virtual void Start(Callback* callback) = 0;
 
-#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
-  virtual void Stop();
-#endif
   // Sets max frame rate for the capturer. This is best effort and may not be
   // supported by all capturers. This will only affect the frequency at which
   // new frames are available, not the frequency at which you are allowed to
@@ -188,12 +184,7 @@ class RTC_EXPORT DesktopCapturer {
 
   // Creates a DesktopCapturer instance which targets to capture screens.
   static std::unique_ptr<DesktopCapturer> CreateScreenCapturer(
-#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
-      const DesktopCaptureOptions& options,
-      base::OnceCallback<void(uint64_t displayId)> callback = base::BindOnce([](uint64_t value) {}));
-#else
       const DesktopCaptureOptions& options);
-#endif
 
   // Creates a DesktopCapturer instance which targets to capture windows and
   // screens.
@@ -224,12 +215,7 @@ class RTC_EXPORT DesktopCapturer {
   // Creates a platform specific DesktopCapturer instance which targets to
   // capture screens.
   static std::unique_ptr<DesktopCapturer> CreateRawScreenCapturer(
-#if BUILDFLAG(ARKWEB_ARKWEB_EXTENSIONS)
-      const DesktopCaptureOptions& options,
-      base::OnceCallback<void (uint64_t)> callback = base::BindOnce([](uint64_t value) {}));
-#else
       const DesktopCaptureOptions& options);
-#endif
 };
 
 }  // namespace webrtc
