@@ -425,6 +425,8 @@ rtc_library("desktop_capture") {
       "ohos/capturer_event_callback.h",
       "ohos/desktop_capture_frame.cc",
       "ohos/desktop_capture_frame.h",
+      "ohos/desktop_capture_utils.cc",
+      "ohos/desktop_capture_utils.h",
       "ohos/native_frame.cc",
       "ohos/native_frame.h",
       "ohos/window_capturer_notify.cc",
