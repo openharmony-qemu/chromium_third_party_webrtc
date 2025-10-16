@@ -109,10 +109,11 @@ class BaseWindowCapturer : public DesktopCapturer {
       BaseWindowCapturer::CaptureSourceType::kScreen;
   std::unique_ptr<SharedMemoryFactory> shared_memory_factory_ = nullptr;
   OH_AVScreenCapture* screen_capture_ = nullptr;
-  base::WeakPtrFactory<BaseWindowCapturer> weak_factory_{this};
   bool isStart_ = false;
   SourceId selectSourceId_ = -1;
   ohos::adapter::OhosDisplay ohos_screen_;
+
+  base::WeakPtrFactory<BaseWindowCapturer> weak_factory_{this};
 };
 
 }  // namespace webrtc
