@@ -24,8 +24,9 @@
 
     @implementation RTC_OBJC_TYPE (RTCVideoDecoderAV1Builder)
 
-    - (std::unique_ptr<webrtc::VideoDecoder>)build:(const webrtc::Environment&)env {
-      return webrtc::CreateDav1dDecoder();
+    - (std::unique_ptr<webrtc::VideoDecoder>)build:
+        (const webrtc::Environment&)env {
+      return webrtc::CreateDav1dDecoder(env);
     }
 
     @end

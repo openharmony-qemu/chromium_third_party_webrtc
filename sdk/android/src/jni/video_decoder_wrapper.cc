@@ -16,6 +16,7 @@
 #include "api/video/video_frame.h"
 #include "api/video_codecs/video_decoder.h"
 #include "modules/video_coding/include/video_codec_interface.h"
+#include "modules/video_coding/include/video_error_codes.h"
 #include "modules/video_coding/utility/vp8_header_parser.h"
 #include "modules/video_coding/utility/vp9_uncompressed_header_parser.h"
 #include "rtc_base/logging.h"
@@ -33,11 +34,11 @@ namespace jni {
 
 namespace {
 // RTP timestamps are 90 kHz.
-const int64_t kNumRtpTicksPerMillisec = 90000 / rtc::kNumMillisecsPerSec;
+const int64_t kNumRtpTicksPerMillisec = 90000 / kNumMillisecsPerSec;
 
 template <typename Dst, typename Src>
 inline std::optional<Dst> cast_optional(const std::optional<Src>& value) {
-  return value ? std::optional<Dst>(rtc::dchecked_cast<Dst, Src>(*value))
+  return value ? std::optional<Dst>(dchecked_cast<Dst, Src>(*value))
                : std::nullopt;
 }
 }  // namespace
@@ -106,7 +107,7 @@ int32_t VideoDecoderWrapper::Decode(const EncodedImage& image_param,
 
   FrameExtraInfo frame_extra_info;
   frame_extra_info.timestamp_ns =
-      input_image.capture_time_ms_ * rtc::kNumNanosecsPerMillisec;
+      input_image.capture_time_ms_ * kNumNanosecsPerMillisec;
   frame_extra_info.timestamp_rtp = input_image.RtpTimestamp();
   frame_extra_info.timestamp_ntp = input_image.ntp_time_ms_;
   frame_extra_info.qp =
