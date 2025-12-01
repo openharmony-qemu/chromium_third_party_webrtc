@@ -17,7 +17,7 @@
 #include "rtc_base/time_utils.h"
 
 @implementation RTC_OBJC_TYPE (RTCDtmfSender) {
-  rtc::scoped_refptr<webrtc::DtmfSenderInterface> _nativeDtmfSender;
+  webrtc::scoped_refptr<webrtc::DtmfSenderInterface> _nativeDtmfSender;
 }
 
 - (BOOL)canInsertDtmf {
@@ -29,8 +29,9 @@
       interToneGap:(NSTimeInterval)interToneGap {
   RTC_DCHECK(tones != nil);
 
-  int durationMs = static_cast<int>(duration * rtc::kNumMillisecsPerSec);
-  int interToneGapMs = static_cast<int>(interToneGap * rtc::kNumMillisecsPerSec);
+  int durationMs = static_cast<int>(duration * webrtc::kNumMillisecsPerSec);
+  int interToneGapMs =
+      static_cast<int>(interToneGap * webrtc::kNumMillisecsPerSec);
   return _nativeDtmfSender->InsertDtmf(
       [NSString stdStringForString:tones], durationMs, interToneGapMs);
 }
@@ -40,36 +41,40 @@
 }
 
 - (NSTimeInterval)duration {
-  return static_cast<NSTimeInterval>(_nativeDtmfSender->duration()) / rtc::kNumMillisecsPerSec;
+  return static_cast<NSTimeInterval>(_nativeDtmfSender->duration()) /
+      webrtc::kNumMillisecsPerSec;
 }
 
 - (NSTimeInterval)interToneGap {
   return static_cast<NSTimeInterval>(_nativeDtmfSender->inter_tone_gap()) /
-      rtc::kNumMillisecsPerSec;
+      webrtc::kNumMillisecsPerSec;
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"RTC_OBJC_TYPE(RTCDtmfSender) {\n  remainingTones: %@\n  "
-                                    @"duration: %f sec\n  interToneGap: %f sec\n}",
-                                    [self remainingTones],
-                                    [self duration],
-                                    [self interToneGap]];
+  return
+      [NSString stringWithFormat:
+                    @"RTC_OBJC_TYPE(RTCDtmfSender) {\n  remainingTones: %@\n  "
+                    @"duration: %f sec\n  interToneGap: %f sec\n}",
+                    [self remainingTones],
+                    [self duration],
+                    [self interToneGap]];
 }
 
 #pragma mark - Private
 
-- (rtc::scoped_refptr<webrtc::DtmfSenderInterface>)nativeDtmfSender {
+- (webrtc::scoped_refptr<webrtc::DtmfSenderInterface>)nativeDtmfSender {
   return _nativeDtmfSender;
 }
 
 - (instancetype)initWithNativeDtmfSender:
-        (rtc::scoped_refptr<webrtc::DtmfSenderInterface>)nativeDtmfSender {
+    (webrtc::scoped_refptr<webrtc::DtmfSenderInterface>)nativeDtmfSender {
   NSParameterAssert(nativeDtmfSender);
   self = [super init];
   if (self) {
     _nativeDtmfSender = nativeDtmfSender;
-    RTCLogInfo(
-        @"RTC_OBJC_TYPE(RTCDtmfSender)(%p): created DTMF sender: %@", self, self.description);
+    RTCLogInfo(@"RTC_OBJC_TYPE(RTCDtmfSender)(%p): created DTMF sender: %@",
+               self,
+               self.description);
   }
   return self;
 }

@@ -1,31 +1,6 @@
-/*
- * Copyright (c) 2023-2025 Haitai FangYuan Co., Ltd.
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this list of
- *    conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice, this list
- *    of conditions and the following disclaimer in the documentation and/or other materials
- *    provided with the distribution.
- *
- * 3. Neither the name of the copyright holder nor the names of its contributors may be used
- *    to endorse or promote products derived from this software without specific prior written
- *    permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// Copyright (c) 2024 Huawei Device Co., Ltd. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 #include "modules/desktop_capture/ohos/base_window_capturer.h"
 
@@ -47,13 +22,15 @@
 #include "modules/desktop_capture/desktop_capture_options.h"
 #include "modules/desktop_capture/desktop_capturer.h"
 #include "modules/desktop_capture/ohos/capturer_event_callback.h"
+#include "modules/desktop_capture/ohos/desktop_capture_utils.h"
 #include "modules/desktop_capture/ohos/window_capturer_notify.h"
+#include "ohos/adapter/screen_capture/screen_capture_adapter.h"
 #include "rtc_base/checks.h"
 #include "rtc_base/logging.h"
 #include "rtc_base/string_encode.h"
 #include "rtc_base/string_to_number.h"
+#include "rtc_base/thread.h"
 #include "rtc_base/time_utils.h"
-#include "system_wrappers/include/sleep.h"
 
 namespace webrtc {
 namespace {
@@ -177,9 +154,16 @@ BaseWindowCapturer::~BaseWindowCapturer() {
 }
 
 bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
+  if (capture_source_type_ != BaseWindowCapturer::CaptureSourceType::kScreen) {
+    LOG(WARNING)
+        << " [WebRTC] Only screen capture is supported, capture_source_type_: "
+        << static_cast<int>(capture_source_type_);
+    return false;
+  }
+
   options_ = options;
 
-  ohos::adapter::ScreenAdapter::GetInstance().GetDefaultDisplay(ohos_screen_);
+  ohos::adapter::ScreenAdapter::GetInstance().GetPrimaryDisplay(ohos_screen_);
   int32_t videoFrameWidth =
       ohos_screen_.width > 0 ? ohos_screen_.width : kVideoFrameWidth;
   int32_t videoFrameHeight =
@@ -187,7 +171,7 @@ bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
 
   screen_capture_ = OH_AVScreenCapture_Create();
   if (!screen_capture_) {
-    LOG(ERROR) << "create screen capture adapter failed";
+    LOG(ERROR) << __func__ << " [WebRTC] Create screen capture adapter failed";
     return false;
   }
 
@@ -205,19 +189,25 @@ bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
       .dataType = OH_DataType::OH_ORIGINAL_STREAM,
       .videoInfo = videoInfo};
 
+  // Whether the auto-rotation setting is successful or not, you should proceed.
+  if (!ohos::adapter::ScreenCaptureAdapter::GetInstance().SetAutoRotation(
+          screen_capture_)) {
+    LOG(ERROR) << "[WebRTC] Failed to set automatic screen rotation for shared "
+                  "screen.";
+  }
+
   auto callback =
       std::make_shared<OHOSScreenCaptureCallback>(weak_factory_.GetWeakPtr());
   if (!webrtc::WindowCapturerNotify::GetInstance()->RegisterEventCallback(
           screen_capture_, callback, this)) {
-    OH_AVScreenCapture_Release(screen_capture_);
     return false;
   }
 
   OH_AVSCREEN_CAPTURE_ErrCode errCode =
       OH_AVScreenCapture_Init(screen_capture_, config);
   if (errCode != AV_SCREEN_CAPTURE_ERR_OK) {
-    LOG(ERROR) << "screen capture init failed, errCode:" << errCode;
-    OH_AVScreenCapture_Release(screen_capture_);
+    LOG(ERROR) << __func__
+               << " [WebRTC] Screen capture init failed, errCode:" << errCode;
     return false;
   }
   return true;
@@ -247,6 +237,8 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
                                       int64_t timestamp,
                                       void* userData) {
   if (bufferType != OH_SCREEN_CAPTURE_BUFFERTYPE_VIDEO) {
+    LOG(WARNING) << __func__ << " [WebRTC] Buffer type not correct: "
+                 << static_cast<int>(bufferType);
     return;
   }
 
@@ -254,7 +246,7 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
 
   std::unique_ptr<NativeFrame> native_frame = NativeFrame::Create(buffer);
   if (!native_frame) {
-    LOG(ERROR) << "acquire video buffer failed";
+    LOG(ERROR) << " [WebRTC] Acquire video buffer failed";
     StopCapture();
     return;
   }
@@ -266,7 +258,8 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
   queue_.MoveToNextFrame();
   if (queue_.current_frame() && queue_.current_frame()->frame() &&
       queue_.current_frame()->frame()->IsShared()) {
-    LOG(WARNING) << "Overwriting frame that is still shared.";
+    LOG(WARNING) << __func__
+                 << " [WebRTC] Overwriting frame that is still shared.";
   }
 
   DesktopSize image_size(image_width, image_height);
@@ -277,20 +270,25 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
 
   DesktopCaptureFrame* frame = queue_.current_frame();
   if (!frame->Prepare(image_size)) {
-    LOG(ERROR) << "cannot create a new DesktopFrame";
+    LOG(ERROR) << __func__ << " [WebRTC] Cannot create a new DesktopFrame";
     return;
   }
   frame->frame()->mutable_updated_region()->Clear();
 
   uint8_t* src_data = native_frame->GetBuffer();
   if (!src_data) {
-    LOG(ERROR) << "get native buffer failed";
+    LOG(ERROR) << __func__ << " [WebRTC] Get native buffer failed";
     return;
   }
 
   DesktopFrame* current_frame = frame->frame();
   current_frame->CopyPixelsFrom(src_data, image_stride,
                                 DesktopRect::MakeSize(current_frame->size()));
+  // The format of frame captured by OH is RGBA
+  RGBAtoBGRAportable(
+      reinterpret_cast<uint32_t*>(current_frame->data()),
+      reinterpret_cast<uint32_t*>(current_frame->data()),
+      current_frame->size().width() * current_frame->size().height());
   current_frame->mutable_updated_region()->SetRect(
       DesktopRect::MakeSize(current_frame->size()));
 
@@ -303,23 +301,26 @@ void BaseWindowCapturer::Start(Callback* callback) {
   (void)capture_source_type_;
   callback_ = callback;
 
-  if (isStart_) {
-    LOG(INFO) << "already started, no need to start again";
+  if (is_start_) {
+    LOG(INFO) << __func__
+              << " [WebRTC] Already started, no need to start again";
     return;
   }
 
   OH_AVSCREEN_CAPTURE_ErrCode errCode =
       OH_AVScreenCapture_StartScreenCapture(screen_capture_);
   if (errCode != AV_SCREEN_CAPTURE_ERR_OK) {
-    LOG(ERROR) << "start capture failed, errCode:" << errCode;
+    LOG(ERROR) << __func__
+               << " [WebRTC] Start capture failed, errCode:" << errCode;
     return;
   }
   SetState(true);
 }
 
 void BaseWindowCapturer::CaptureFrame() {
-  if (!isStart_) {
-    LOG(ERROR) << "Failed to capture frame, no start pipeline";
+  if (!is_start_) {
+    LOG(ERROR) << __func__
+               << " [WebRTC] Failed to capture frame, no start pipeline";
     callback_->OnCaptureResult(Result::ERROR_PERMANENT, nullptr);
     return;
   }
@@ -338,7 +339,8 @@ bool BaseWindowCapturer::GetSourceList(SourceList* sources) {
       sources->push_back({ohos_screen_.id, ohos_screen_.name});
       return true;
     case BaseWindowCapturer::CaptureSourceType::kWindow:
-      LOG(WARNING) << "capture window frame not supported";
+      LOG(WARNING) << __func__
+                   << " [WebRTC] Capture window frame not supported";
       break;
     default:
       break;
@@ -348,14 +350,14 @@ bool BaseWindowCapturer::GetSourceList(SourceList* sources) {
 }
 
 bool BaseWindowCapturer::SelectSource(SourceId id) {
-  selectSourceId_ = id;
+  select_source_id_ = id;
   return true;
 }
 
 void BaseWindowCapturer::DoCapture() {
   webrtc::MutexLock lock(&current_frame_lock_);
   if (!queue_.current_frame() || !queue_.current_frame()->frame()) {
-    LOG(WARNING) << "no frames with a temporary error";
+    LOG(WARNING) << __func__ << " [WebRTC] No frames with a temporary error";
     callback_->OnCaptureResult(Result::ERROR_TEMPORARY, nullptr);
     return;
   }
@@ -364,7 +366,7 @@ void BaseWindowCapturer::DoCapture() {
   std::unique_ptr<DesktopFrame> frame =
       queue_.current_frame()->frame()->Share();
   if (!frame) {
-    LOG(ERROR) << "Failed to capture screen.";
+    LOG(ERROR) << __func__ << " [WebRTC] Failed to capture screen.";
     callback_->OnCaptureResult(Result::ERROR_PERMANENT, nullptr);
     return;
   }
@@ -377,13 +379,13 @@ bool BaseWindowCapturer::EnsureFrameCaptured() {
   const int64_t ms_per_frame = 17;
   const int64_t timeout_ms = std::numeric_limits<int>::max();
 
-  const int64_t start_ms = rtc::TimeMillis();
-  while (isStart_) {
+  const int64_t start_ms = TimeMillis();
+  while (is_start_) {
     if (queue_.current_frame() && queue_.current_frame()->frame()) {
       break;
     }
 
-    if (rtc::TimeMillis() - start_ms > timeout_ms) {
+    if (TimeMillis() - start_ms > timeout_ms) {
       LOG(ERROR) << "Failed to capture frames within " << timeout_ms
                  << " milliseconds.";
       return false;
@@ -391,7 +393,7 @@ bool BaseWindowCapturer::EnsureFrameCaptured() {
 
     // Sleep `ms_per_frame` before attempting to capture the next frame to
     // ensure the video adapter has time to update the screen.
-    webrtc::SleepMs(ms_per_frame);
+    Thread::SleepMs(ms_per_frame);
   }
   return true;
 }
