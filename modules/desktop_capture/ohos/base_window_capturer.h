@@ -99,7 +99,7 @@ class BaseWindowCapturer : public DesktopCapturer {
   void DoCaptureSync();
   bool EnsureFrameCaptured();
   void StopCapture();
-  void SetState(bool isStart) { isStart_ = isStart; }
+  void SetState(bool isStart) { is_start_ = isStart; }
 
   webrtc::Mutex current_frame_lock_;
   DesktopCaptureOptions options_;
@@ -109,8 +109,8 @@ class BaseWindowCapturer : public DesktopCapturer {
       BaseWindowCapturer::CaptureSourceType::kScreen;
   std::unique_ptr<SharedMemoryFactory> shared_memory_factory_ = nullptr;
   OH_AVScreenCapture* screen_capture_ = nullptr;
-  bool isStart_ = false;
-  SourceId selectSourceId_ = -1;
+  bool is_start_ = false;
+  SourceId select_source_id_ = -1;
   ohos::adapter::OhosDisplay ohos_screen_;
 
   base::WeakPtrFactory<BaseWindowCapturer> weak_factory_{this};
