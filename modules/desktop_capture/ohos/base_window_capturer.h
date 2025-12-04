@@ -68,12 +68,13 @@ class BaseWindowCapturer : public DesktopCapturer {
                     OH_AVScreenCaptureBufferType bufferType,
                     int64_t timestamp,
                     void* userData);
+  void StopCapture();
+  base::WeakPtr<BaseWindowCapturer> GetWeakPtr();
 
  private:
   void DoCapture();
   void DoCaptureSync();
   bool EnsureFrameCaptured();
-  void StopCapture();
   void SetState(bool isStart) { is_start_ = isStart; }
 
   webrtc::Mutex current_frame_lock_;
