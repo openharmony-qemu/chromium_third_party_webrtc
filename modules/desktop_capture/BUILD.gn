@@ -429,6 +429,8 @@ rtc_library("desktop_capture") {
       "ohos/desktop_capture_utils.h",
       "ohos/native_frame.cc",
       "ohos/native_frame.h",
+      "ohos/screenshot_desktop_capturer.cc",
+      "ohos/screenshot_desktop_capturer.h",
       "ohos/window_capturer_notify.cc",
       "ohos/window_capturer_notify.h",
       "screen_capturer_ohos.cc",
@@ -437,6 +439,7 @@ rtc_library("desktop_capture") {
     libs = [
       "native_avscreen_capture",
       "native_buffer",
+      "native_display_manager",
       "native_media_core",
     ]
     deps += [ "//ohos/adapter" ]

@@ -231,6 +231,8 @@ class RTC_EXPORT DesktopCaptureOptions {
 #if defined(WEBRTC_OHOS)
   bool allow_sync_capturer() const { return allow_sync_capturer_; }
   void set_allow_sync_capturer(bool allow) { allow_sync_capturer_ = allow; }
+  bool use_screenshot() const { return use_screenshot_; }
+  void set_use_screenshot(bool use) { use_screenshot_ = use; }
 #endif
 
  private:
@@ -278,6 +280,7 @@ class RTC_EXPORT DesktopCaptureOptions {
 #endif
 #if defined(WEBRTC_OHOS)
   bool allow_sync_capturer_ = false;
+  bool use_screenshot_ = false;
 #endif
 };
 

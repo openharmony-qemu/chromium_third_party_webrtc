@@ -49,6 +49,7 @@
 #include "modules/desktop_capture/ohos/capturer_event_callback.h"
 #include "modules/desktop_capture/ohos/desktop_capture_utils.h"
 #include "modules/desktop_capture/ohos/window_capturer_notify.h"
+#include "ohos/adapter/screen_capture/screen_capture_adapter.h"
 #include "rtc_base/checks.h"
 #include "rtc_base/logging.h"
 #include "rtc_base/string_encode.h"
@@ -179,14 +180,15 @@ BaseWindowCapturer::~BaseWindowCapturer() {
 
 bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
   if (capture_source_type_ != BaseWindowCapturer::CaptureSourceType::kScreen) {
-    LOG(WARNING) << " [WebRTC] Only screen capture is supported, capture_source_type_: "
-                 << static_cast<int>(capture_source_type_);
+    LOG(WARNING)
+        << " [WebRTC] Only screen capture is supported, capture_source_type_: "
+        << static_cast<int>(capture_source_type_);
     return false;
   }
 
   options_ = options;
 
-  ohos::adapter::ScreenAdapter::GetInstance().GetDefaultDisplay(ohos_screen_);
+  ohos::adapter::ScreenAdapter::GetInstance().GetPrimaryDisplay(ohos_screen_);
   int32_t videoFrameWidth =
       ohos_screen_.width > 0 ? ohos_screen_.width : kVideoFrameWidth;
   int32_t videoFrameHeight =
@@ -212,19 +214,25 @@ bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
       .dataType = OH_DataType::OH_ORIGINAL_STREAM,
       .videoInfo = videoInfo};
 
+  // Whether the auto-rotation setting is successful or not, you should proceed.
+  if (!ohos::adapter::ScreenCaptureAdapter::GetInstance().SetAutoRotation(
+          screen_capture_)) {
+    LOG(ERROR) << "[WebRTC] Failed to set automatic screen rotation for shared "
+                  "screen.";
+  }
+
   auto callback =
       std::make_shared<OHOSScreenCaptureCallback>(weak_factory_.GetWeakPtr());
   if (!webrtc::WindowCapturerNotify::GetInstance()->RegisterEventCallback(
           screen_capture_, callback, this)) {
-    OH_AVScreenCapture_Release(screen_capture_);
     return false;
   }
 
   OH_AVSCREEN_CAPTURE_ErrCode errCode =
       OH_AVScreenCapture_Init(screen_capture_, config);
   if (errCode != AV_SCREEN_CAPTURE_ERR_OK) {
-    LOG(ERROR) << __func__ << " [WebRTC] Screen capture init failed, errCode:" << errCode;
-    OH_AVScreenCapture_Release(screen_capture_);
+    LOG(ERROR) << __func__
+               << " [WebRTC] Screen capture init failed, errCode:" << errCode;
     return false;
   }
   return true;
@@ -254,8 +262,9 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
                                       int64_t timestamp,
                                       void* userData) {
   if (bufferType != OH_SCREEN_CAPTURE_BUFFERTYPE_VIDEO) {
-      LOG(WARNING) << __func__ << " [WebRTC] Buffer type not correct: " << static_cast<int>(bufferType);
-      return;
+    LOG(WARNING) << __func__ << " [WebRTC] Buffer type not correct: "
+                 << static_cast<int>(bufferType);
+    return;
   }
 
   webrtc::MutexLock lock(&current_frame_lock_);
@@ -274,7 +283,8 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
   queue_.MoveToNextFrame();
   if (queue_.current_frame() && queue_.current_frame()->frame() &&
       queue_.current_frame()->frame()->IsShared()) {
-    LOG(WARNING) << __func__ << " [WebRTC] Overwriting frame that is still shared.";
+    LOG(WARNING) << __func__
+                 << " [WebRTC] Overwriting frame that is still shared.";
   }
 
   DesktopSize image_size(image_width, image_height);
@@ -285,14 +295,14 @@ void BaseWindowCapturer::HandleBuffer(OH_AVBuffer* buffer,
 
   DesktopCaptureFrame* frame = queue_.current_frame();
   if (!frame->Prepare(image_size)) {
-    LOG(ERROR) << __func__  << " [WebRTC] Cannot create a new DesktopFrame";
+    LOG(ERROR) << __func__ << " [WebRTC] Cannot create a new DesktopFrame";
     return;
   }
   frame->frame()->mutable_updated_region()->Clear();
 
   uint8_t* src_data = native_frame->GetBuffer();
   if (!src_data) {
-    LOG(ERROR) << __func__  << " [WebRTC] Get native buffer failed";
+    LOG(ERROR) << __func__ << " [WebRTC] Get native buffer failed";
     return;
   }
 
@@ -316,23 +326,26 @@ void BaseWindowCapturer::Start(Callback* callback) {
   (void)capture_source_type_;
   callback_ = callback;
 
-  if (isStart_) {
-    LOG(INFO) << __func__ << " [WebRTC] Already started, no need to start again";
+  if (is_start_) {
+    LOG(INFO) << __func__
+              << " [WebRTC] Already started, no need to start again";
     return;
   }
 
   OH_AVSCREEN_CAPTURE_ErrCode errCode =
       OH_AVScreenCapture_StartScreenCapture(screen_capture_);
   if (errCode != AV_SCREEN_CAPTURE_ERR_OK) {
-    LOG(ERROR) << __func__ << " [WebRTC] Start capture failed, errCode:" << errCode;
+    LOG(ERROR) << __func__
+               << " [WebRTC] Start capture failed, errCode:" << errCode;
     return;
   }
   SetState(true);
 }
 
 void BaseWindowCapturer::CaptureFrame() {
-  if (!isStart_) {
-    LOG(ERROR) << __func__ <<" [WebRTC] Failed to capture frame, no start pipeline";
+  if (!is_start_) {
+    LOG(ERROR) << __func__
+               << " [WebRTC] Failed to capture frame, no start pipeline";
     callback_->OnCaptureResult(Result::ERROR_PERMANENT, nullptr);
     return;
   }
@@ -351,7 +364,8 @@ bool BaseWindowCapturer::GetSourceList(SourceList* sources) {
       sources->push_back({ohos_screen_.id, ohos_screen_.name});
       return true;
     case BaseWindowCapturer::CaptureSourceType::kWindow:
-      LOG(WARNING) << __func__ << " [WebRTC] Capture window frame not supported";
+      LOG(WARNING) << __func__
+                   << " [WebRTC] Capture window frame not supported";
       break;
     default:
       break;
@@ -361,7 +375,7 @@ bool BaseWindowCapturer::GetSourceList(SourceList* sources) {
 }
 
 bool BaseWindowCapturer::SelectSource(SourceId id) {
-  selectSourceId_ = id;
+  select_source_id_ = id;
   return true;
 }
 
@@ -391,7 +405,7 @@ bool BaseWindowCapturer::EnsureFrameCaptured() {
   const int64_t timeout_ms = std::numeric_limits<int>::max();
 
   const int64_t start_ms = rtc::TimeMillis();
-  while (isStart_) {
+  while (is_start_) {
     if (queue_.current_frame() && queue_.current_frame()->frame()) {
       break;
     }
