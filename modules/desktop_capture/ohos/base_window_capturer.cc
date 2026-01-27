@@ -43,6 +43,7 @@
 #include "base/memory/platform_shared_memory_region.h"
 #include "base/memory/ptr_util.h"
 #include "base/memory/read_only_shared_memory_region.h"
+#include "base/ohos/task_scheduler/task_runner_ohos.h"
 #include "base/task/single_thread_task_runner.h"
 #include "modules/desktop_capture/desktop_capture_options.h"
 #include "modules/desktop_capture/desktop_capturer.h"
@@ -63,6 +64,22 @@ constexpr int32_t kVideoFrameWidth = 1024;
 constexpr int32_t kVideoFrameHeight = 1080;
 constexpr int32_t kVideoBitrate = 2000000;
 constexpr int32_t kVideoFrameRate = 30;
+
+void OnCaptureContentChanged(OH_AVScreenCapture* capture,
+                             OH_AVScreenCaptureContentChangedEvent event,
+                             OH_Rect* area,
+                             void* user_data) {
+  if (!user_data) {
+    LOG(ERROR) << "OnCaptureContentChanged failed, userData is nullptr";
+    return;
+  }
+  if (event == OH_SCREEN_CAPTURE_CONTENT_UNAVAILABLE) {
+    base::TaskRunnerOHOS::GetUIThreadTaskRunner()->PostTask(
+        FROM_HERE,
+        base::BindOnce(&BaseWindowCapturer::StopCapture,
+                       ((BaseWindowCapturer*)(user_data))->GetWeakPtr()));
+  }
+}
 
 class SharedMemoryImpl : public webrtc::SharedMemory {
  public:
@@ -179,11 +196,8 @@ BaseWindowCapturer::~BaseWindowCapturer() {
 }
 
 bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
-  if (capture_source_type_ != BaseWindowCapturer::CaptureSourceType::kScreen) {
-    LOG(WARNING)
-        << " [WebRTC] Only screen capture is supported, capture_source_type_: "
-        << static_cast<int>(capture_source_type_);
-    return false;
+  if (!options.use_system_picker()) {
+    return true;
   }
 
   options_ = options;
@@ -209,10 +223,28 @@ bool BaseWindowCapturer::Init(const DesktopCaptureOptions& options) {
                                   .videoFrameRate = kVideoFrameRate};
   OH_VideoInfo videoInfo = {.videoCapInfo = videoCapInfo,
                             .videoEncInfo = videoEncInfo};
+
+  OH_AVSCREEN_CAPTURE_ErrCode ret =
+      ohos::adapter::ScreenCaptureAdapter::GetInstance()
+          .SetCaptureContentChanged(screen_capture_, OnCaptureContentChanged,
+                                    this);
+  if (ret != AV_SCREEN_CAPTURE_ERR_OK) {
+    LOG(ERROR) << "[WebRTC] Failed to set capture content change,result: "
+               << ret;
+  }
+
   OH_AVScreenCaptureConfig config = {
-      .captureMode = OH_CaptureMode::OH_CAPTURE_HOME_SCREEN,
+      .captureMode = OH_CAPTURE_SPECIFIED_WINDOW,
       .dataType = OH_DataType::OH_ORIGINAL_STREAM,
       .videoInfo = videoInfo};
+
+  if (options.prefer_cursor_embedded()) {
+    ret = ohos::adapter::ScreenCaptureAdapter::GetInstance().ShowCursor(
+        screen_capture_);
+    if (ret != AV_SCREEN_CAPTURE_ERR_OK) {
+      LOG(ERROR) << "[WebRTC] Failed to set show cursor,result: " << ret;
+    }
+  }
 
   // Whether the auto-rotation setting is successful or not, you should proceed.
   if (!ohos::adapter::ScreenCaptureAdapter::GetInstance().SetAutoRotation(
@@ -437,6 +469,10 @@ void BaseWindowCapturer::StopCapture() {
   }
 
   SetState(false);
+}
+
+base::WeakPtr<BaseWindowCapturer> BaseWindowCapturer::GetWeakPtr() {
+  return weak_factory_.GetWeakPtr();
 }
 
 // static
