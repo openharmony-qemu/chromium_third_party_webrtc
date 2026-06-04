@@ -126,6 +126,7 @@ int32_t VideoCaptureModuleV4L2::StartCapture(
   // only when we are not capturing. The code above can be called many
   // times while sharing instance of VideoCaptureV4L2 between websites
   // and therefore it would not follow the requirements of this checker.
+  {
   RTC_CHECK_RUNS_SERIALIZED(&capture_checker_);
 
   // Set a baseline of configured parameters. It is updated here during
@@ -216,16 +217,16 @@ int32_t VideoCaptureModuleV4L2::StartCapture(
     configured_capability_.videoType = VideoType::kBGR24;
   else if (video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_RGB565)
     configured_capability_.videoType = VideoType::kRGB565;
-  else if (video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_ABGR32 ||
-           video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_BGR32)
+  else if (video_fmt.fmt.pixelformat == V4L2_PIX_FMT_ABGR32 ||
+           video_fmt.fmt.pixelformat == V4L2_PIX_FMT_BGR32)
     configured_capability_.videoType = VideoType::kARGB;
-  else if (video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_ARGB32 ||
-           video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_RGB32)
+  else if (video_fmt.fmt.pixelformat == V4L2_PIX_FMT_ARGB32 ||
+           video_fmt.fmt.pixelformat == V4L2_PIX_FMT_RGB32)
     configured_capability_.videoType = VideoType::kBGRA;
-  else if (video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_RGBA32)
+  else if (video_fmt.fmt.pixelformat == V4L2_PIX_FMT_RGBA32)
     configured_capability_.videoType = VideoType::kABGR;
-  else if (video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_MJPEG ||
-           video_fmt.fmt.pix.pixelformat == V4L2_PIX_FMT_JPEG)
+  else if (video_fmt.fmt.pixelformat == V4L2_PIX_FMT_MJPEG ||
+           video_fmt.fmt.pixelformat == V4L2_PIX_FMT_JPEG)
     configured_capability_.videoType = VideoType::kMJPEG;
   else
     RTC_DCHECK_NOTREACHED();
@@ -290,9 +291,12 @@ int32_t VideoCaptureModuleV4L2::StartCapture(
   _requestedCapability = capability;
   _captureStarted = true;
   _streaming = true;
+  quit_ = false;
+  }
+  //Outside of 'RTC_CHECK_RUNS_SERIALIZED(&capture_checker_);
 
   // start capture thread;
-  if (_captureThread.empty()) {
+  RTC_CHECK(_captureThread.empty()) {
     quit_ = false;
     _captureThread = rtc::PlatformThread::SpawnJoinable(
         [this] {
