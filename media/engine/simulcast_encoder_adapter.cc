@@ -282,7 +282,9 @@ SimulcastEncoderAdapter::SimulcastEncoderAdapter(
 
 SimulcastEncoderAdapter::~SimulcastEncoderAdapter() {
   RTC_DCHECK_RUN_ON(&encoder_queue_);
-  RTC_DCHECK(!Initialized());
+  if (Initialized()) {
+    Release();
+  }
   DestroyStoredEncoders();
 }
 
