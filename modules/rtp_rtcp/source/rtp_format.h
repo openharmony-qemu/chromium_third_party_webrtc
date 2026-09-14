@@ -17,6 +17,7 @@
 #include <memory>
 #include <vector>
 
+#include "absl/base/nullability.h"
 #include "api/array_view.h"
 #include "modules/rtp_rtcp/source/rtp_video_header.h"
 
@@ -43,7 +44,7 @@ class RtpPacketizer {
     kVP9,
     kAV1,
   };
-  static std::unique_ptr<RtpPacketizer> Create(
+  static absl_nonnull std::unique_ptr<RtpPacketizer> Create(
       PacketizationFormat format,
       ArrayView<const uint8_t> payload,
       PayloadSizeLimits limits,
