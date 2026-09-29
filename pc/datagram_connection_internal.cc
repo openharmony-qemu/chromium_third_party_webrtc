@@ -57,6 +57,7 @@ using PacketMetadata = DatagramConnection::Observer::PacketMetadata;
 
 const size_t kMaxRtpPacketLen = 2048;
 const size_t kIceUfragLength = 16;
+const size_t kMinPayloadLengthForRtpCheck = 2;
 
 // Helper function to create IceTransportInit
 IceTransportInit CreateIceTransportInit(const Environment& env,
@@ -279,7 +280,8 @@ void DatagramConnectionInternal::SendSinglePacket(
     return;
   }
 
-  if (IsRtpOrRtcpPacket(packet.payload[0])) {
+  if (packet.payload.size() >= kMinPayloadLengthForRtpCheck &&
+      IsRtpOrRtcpPacket(packet.payload[0])) {
     // Copy the payload into a buffer with some extra capacity to allow space
     // for the SRTP encryption tag to be added.
     CopyOnWriteBuffer buffer(packet.payload.data(), packet.payload.size(),
