@@ -2334,7 +2334,8 @@ void SdpOfferAnswerHandler::ApplyRemoteDescriptionUpdateTransceiverState(
       // direction.
       transceiver->set_current_direction(local_direction);
       // 2.2.8.1.11.[3-6]: Set the transport internal slots.
-      if (transceiver->mid()) {
+      // A stopped transceiver has no channel and therefore no transport.
+      if (transceiver->mid() && !transceiver->stopped()) {
         auto dtls_transport = LookupDtlsTransportByMid(
             context_->network_thread(), transport_controller_s(),
             *transceiver->mid());
@@ -4211,7 +4212,8 @@ RTCError SdpOfferAnswerHandler::UpdateTransceiverChannel(
   RTC_DCHECK(IsUnifiedPlan());
   RTC_DCHECK(transceiver);
   ChannelInterface* channel = transceiver->internal()->channel();
-  if (content.rejected) {
+  // A stopped transceiver must not have a channel.
+  if (content.rejected || transceiver->internal()->stopped()) {
     if (channel) {
       transceiver->internal()->ClearChannel();
     }
@@ -5324,6 +5326,10 @@ void SdpOfferAnswerHandler::RemoveStoppedTransceivers() {
       // See https://github.com/w3c/webrtc-pc/issues/2576
       RTC_LOG(LS_INFO)
           << "Dropping stopped transceiver that was never associated";
+    }
+    // Make sure the channel is cleared before the transceiver is removed.
+    if (transceiver->internal()->channel()) {
+      transceiver->internal()->ClearChannel();
     }
     transceivers()->Remove(transceiver);
   }
