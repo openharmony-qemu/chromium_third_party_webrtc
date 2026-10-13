@@ -120,6 +120,11 @@ class RtpTransceiver : public RtpTransceiverInterface {
   // the transceiver is not in the currently set local/remote description.
   ChannelInterface* channel() const { return channel_.get(); }
 
+  // Returns the MID that the channel was created for, or an empty string if
+  // there is no channel. The channel stays bound to the transport of this MID
+  // for its lifetime. Must be called on the network thread.
+  absl::string_view channel_mid() const;
+
   // Creates the Voice/VideoChannel and sets it.
   RTCError CreateChannel(
       absl::string_view mid,
@@ -160,7 +165,7 @@ class RtpTransceiver : public RtpTransceiverInterface {
   // ClearChannel() must be used before calling SetChannel() again.
   void SetChannel(
       std::unique_ptr<ChannelInterface> channel,
-      absl::AnyInvocable<RtpTransportInternal*(const std::string&) &&>
+      absl::AnyInvocable<RtpTransportInternal*(const std::string&)&&>
           transport_lookup);
 
   // Clear the association between the transceiver and the channel.
