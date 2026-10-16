@@ -486,6 +486,11 @@ std::optional<std::string> RtpTransceiver::mid() const {
   return mid_;
 }
 
+absl::string_view RtpTransceiver::channel_mid() const {
+  RTC_DCHECK_RUN_ON(context()->network_thread());
+  return channel_ ? absl::string_view(channel_->mid()) : absl::string_view();
+}
+
 // RTC_RUN_ON(context()->worker_thread())
 MediaEngineInterface* RtpTransceiver::media_engine() {
   if (!media_engine_ref_) {
