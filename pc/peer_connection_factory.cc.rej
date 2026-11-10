@@ -1,0 +1,14 @@
+diff a/pc/peer_connection_factory.cc b/pc/peer_connection_factory.cc	(rejected hunks)
+@@ -236,6 +236,12 @@ PeerConnectionFactory::CreatePeerConnectionOrError(
+     return err;
+   }
+ 
++  if (configuration.certificates.size() >
++      PeerConnectionInterface::RTCConfiguration::kMaxCertificates) {
++    return RTCError(RTCErrorType::INVALID_PARAMETER,
++                    "Too many certificates in RTCConfiguration.");
++  }
++
+   ServerAddresses stun_servers;
+   std::vector<RelayServerConfig> turn_servers;
+   err = ParseAndValidateIceServersFromConfiguration(configuration, stun_servers,

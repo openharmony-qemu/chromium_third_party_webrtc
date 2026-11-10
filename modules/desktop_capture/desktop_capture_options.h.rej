@@ -1,0 +1,9 @@
+diff a/modules/desktop_capture/desktop_capture_options.h b/modules/desktop_capture/desktop_capture_options.h	(rejected hunks)
+@@ -28,6 +28,7 @@
+ #endif
+ 
+ #include "modules/desktop_capture/full_screen_window_detector.h"
++#include "arkweb/build/features/features.h"
+ 
+ namespace webrtc {
+ 
