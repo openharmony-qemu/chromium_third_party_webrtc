@@ -1,5 +1,7 @@
 diff a/modules/desktop_capture/win/wgc_capture_session.cc b/modules/desktop_capture/win/wgc_capture_session.cc	(rejected hunks)
-@@ -517,14 +517,6 @@ HRESULT WgcCaptureSession::ProcessFrame() {
+@@ -515,18 +515,10 @@ HRESULT WgcCaptureSession::ProcessFrame() {
+   if (FAILED(hr)) {
+     RecordGetFrameResult(GetFrameResult::kTexture2dCastFailed);
      return hr;
    }
  
@@ -14,7 +16,11 @@ diff a/modules/desktop_capture/win/wgc_capture_session.cc b/modules/desktop_capt
    // We need to copy `texture_2D` into `mapped_texture_` as the latter has the
    // D3D11_CPU_ACCESS_READ flag set, which lets us access the image data.
    // Otherwise it would only be readable by the GPU.
-@@ -541,17 +533,27 @@ HRESULT WgcCaptureSession::ProcessFrame() {
+   ComPtr<ID3D11DeviceContext> d3d_context;
+   d3d11_device_->GetImmediateContext(&d3d_context);
+@@ -539,21 +531,31 @@ HRESULT WgcCaptureSession::ProcessFrame() {
+   }
+ 
    // If the size changed, we must resize `mapped_texture_` and `frame_pool_` to
    // fit the new size. This must be done before `CopySubresourceRegion` so that
    // the textures are the same size.
@@ -45,3 +51,5 @@ diff a/modules/desktop_capture/win/wgc_capture_session.cc b/modules/desktop_capt
        return hr;
      }
    }
+ 
+   // If the size has changed since the last capture, we must be sure to use

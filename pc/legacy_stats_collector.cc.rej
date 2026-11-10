@@ -1,5 +1,7 @@
 diff a/pc/legacy_stats_collector.cc b/pc/legacy_stats_collector.cc	(rejected hunks)
-@@ -21,6 +21,7 @@
+@@ -19,10 +19,11 @@
+ #include <set>
+ #include <string>
  #include <utility>
  #include <vector>
  
@@ -7,7 +9,11 @@ diff a/pc/legacy_stats_collector.cc b/pc/legacy_stats_collector.cc	(rejected hun
  #include "absl/strings/str_cat.h"
  #include "absl/strings/string_view.h"
  #include "api/audio/audio_processing_statistics.h"
-@@ -750,8 +751,13 @@ StatsReport* LegacyStatsCollector::AddCertificateReports(
+ #include "api/audio_codecs/audio_encoder.h"
+ #include "api/candidate.h"
+@@ -748,12 +749,17 @@ StatsReport* LegacyStatsCollector::AddCertificateReports(
+     std::unique_ptr<SSLCertificateStats> cert_stats) {
+   RTC_DCHECK_RUN_ON(pc_->signaling_thread());
  
    StatsReport* first_report = nullptr;
    StatsReport* prev_report = nullptr;
@@ -21,3 +27,5 @@ diff a/pc/legacy_stats_collector.cc b/pc/legacy_stats_collector.cc	(rejected hun
      StatsReport::Id id(StatsReport::NewTypedId(
          StatsReport::kStatsReportTypeCertificate, stats->fingerprint));
  
+     StatsReport* report = reports_.ReplaceOrAddNew(id);
+     report->set_timestamp(stats_gathering_started_);

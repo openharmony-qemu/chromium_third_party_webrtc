@@ -1,5 +1,7 @@
 diff a/rtc_base/BUILD.gn b/rtc_base/BUILD.gn	(rejected hunks)
-@@ -370,16 +370,19 @@ rtc_library("platform_thread_types") {
+@@ -368,20 +368,23 @@ rtc_library("platform_thread_types") {
+     "platform_thread_types.h",
+   ]
    deps = [ ":checks" ]
  }
  
@@ -20,3 +22,5 @@ diff a/rtc_base/BUILD.gn b/rtc_base/BUILD.gn	(rejected hunks)
    ]
  }
  
+ rtc_library("criticalsection") {
+   sources = [

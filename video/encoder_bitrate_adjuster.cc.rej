@@ -1,5 +1,7 @@
 diff a/video/encoder_bitrate_adjuster.cc b/video/encoder_bitrate_adjuster.cc	(rejected hunks)
-@@ -76,9 +76,16 @@ EncoderBitrateAdjuster::EncoderBitrateAdjuster(
+@@ -74,13 +74,20 @@ EncoderBitrateAdjuster::EncoderBitrateAdjuster(
+   // SVC streams, EncoderBitrateAdjuster needs to be updated to care about both
+   // `simulcastStream` and `spatialLayers` at the same time.
    if (codec_settings.codecType == VideoCodecType::kVideoCodecAV1 &&
        codec_settings.numberOfSimulcastStreams <= 1 &&
        codec_settings.GetScalabilityMode().has_value()) {
@@ -19,7 +21,11 @@ diff a/video/encoder_bitrate_adjuster.cc b/video/encoder_bitrate_adjuster.cc	(re
        if (codec_settings.spatialLayers[si].active) {
          min_bitrates_bps_[si] =
              std::max(codec_settings.minBitrate * 1000,
-@@ -88,6 +95,13 @@ EncoderBitrateAdjuster::EncoderBitrateAdjuster(
+                      codec_settings.spatialLayers[si].minBitrate * 1000);
+       }
+@@ -86,10 +93,17 @@ EncoderBitrateAdjuster::EncoderBitrateAdjuster(
+       }
+     }
    } else if (codec_settings.codecType == VideoCodecType::kVideoCodecVP9 &&
               codec_settings.numberOfSimulcastStreams <= 1) {
      for (size_t si = 0; si < codec_settings.VP9().numberOfSpatialLayers; ++si) {
@@ -33,7 +39,11 @@ diff a/video/encoder_bitrate_adjuster.cc b/video/encoder_bitrate_adjuster.cc	(re
        if (codec_settings.spatialLayers[si].active) {
          min_bitrates_bps_[si] =
              std::max(codec_settings.minBitrate * 1000,
-@@ -96,6 +110,13 @@ EncoderBitrateAdjuster::EncoderBitrateAdjuster(
+                      codec_settings.spatialLayers[si].minBitrate * 1000);
+       }
+@@ -94,10 +108,17 @@ EncoderBitrateAdjuster::EncoderBitrateAdjuster(
+                      codec_settings.spatialLayers[si].minBitrate * 1000);
+       }
      }
    } else {
      for (size_t si = 0; si < codec_settings.numberOfSimulcastStreams; ++si) {
@@ -47,7 +57,11 @@ diff a/video/encoder_bitrate_adjuster.cc b/video/encoder_bitrate_adjuster.cc	(re
        if (codec_settings.simulcastStream[si].active) {
          min_bitrates_bps_[si] =
              std::max(codec_settings.minBitrate * 1000,
-@@ -372,6 +393,12 @@ void EncoderBitrateAdjuster::OnEncoderInfo(
+                      codec_settings.simulcastStream[si].minBitrate * 1000);
+       }
+@@ -370,10 +391,16 @@ void EncoderBitrateAdjuster::OnEncoderInfo(
+ void EncoderBitrateAdjuster::OnEncoderInfo(
+     const VideoEncoder::EncoderInfo& encoder_info) {
    // Copy allocation into current state and re-allocate.
    for (size_t si = 0; si < kMaxSpatialLayers; ++si) {
      current_fps_allocation_[si] = encoder_info.fps_allocation[si];
@@ -60,7 +74,11 @@ diff a/video/encoder_bitrate_adjuster.cc b/video/encoder_bitrate_adjuster.cc	(re
    }
  
    // Trigger re-allocation so that overshoot detectors have correct targets.
-@@ -381,6 +408,15 @@ void EncoderBitrateAdjuster::OnEncoderInfo(
+   AdjustRateAllocation(current_rate_control_parameters_);
+ }
+@@ -379,10 +406,19 @@ void EncoderBitrateAdjuster::OnEncoderInfo(
+ }
+ 
  void EncoderBitrateAdjuster::OnEncodedFrame(DataSize size,
                                              int stream_index,
                                              int temporal_index) {
@@ -76,3 +94,5 @@ diff a/video/encoder_bitrate_adjuster.cc b/video/encoder_bitrate_adjuster.cc	(re
    ++frames_since_layout_change_;
    // Detectors may not exist, for instance if ScreenshareLayers is used.
    auto& detector = overshoot_detectors_[stream_index][temporal_index];
+   if (detector) {
+     // Due to http://bugs.webrtc.org/439515766, and sensitivity of some

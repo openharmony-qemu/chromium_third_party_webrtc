@@ -1,5 +1,7 @@
 diff a/pc/sctp_data_channel.cc b/pc/sctp_data_channel.cc	(rejected hunks)
-@@ -344,16 +344,14 @@ SctpDataChannel::SctpDataChannel(
+@@ -342,20 +342,18 @@ SctpDataChannel::SctpDataChannel(
+       max_retransmits_(config.maxRetransmits),
+       priority_(config.priority),
        negotiated_(config.negotiated),
        ordered_(config.ordered),
        observer_(nullptr),
@@ -18,7 +20,11 @@ diff a/pc/sctp_data_channel.cc b/pc/sctp_data_channel.cc	(rejected hunks)
    switch (config.open_handshake_role) {
      case InternalDataChannelInit::kNone:  // pre-negotiated
        handshake_state_ = kHandshakeReady;
-@@ -609,14 +607,17 @@ void SctpDataChannel::SendAsync(
+       break;
+     case InternalDataChannelInit::kOpener:
+@@ -607,18 +605,21 @@ void SctpDataChannel::SendAsync(
+   // owned, on other platforms it might be the signaling thread, or in Chrome
+   // it can be the JS thread. We also don't know if it's consistently the same
    // thread. So we always post to the network thread (even if the current thread
    // might be the network thread - in theory a call could even come from within
    // the `on_complete` callback).
@@ -44,7 +50,11 @@ diff a/pc/sctp_data_channel.cc b/pc/sctp_data_channel.cc	(rejected hunks)
  }
  
  void SctpDataChannel::SetSctpSid_n(StreamId sid) {
-@@ -659,7 +660,7 @@ void SctpDataChannel::OnClosingProcedureComplete() {
+   RTC_DCHECK_RUN_ON(network_thread_);
+   RTC_DCHECK(!id_n_.has_value());
+@@ -657,11 +658,11 @@ void SctpDataChannel::OnClosingProcedureComplete() {
+   SetState(kClosed);
+ }
  
  void SctpDataChannel::OnTransportChannelCreated() {
    RTC_DCHECK_RUN_ON(network_thread_);
@@ -53,7 +63,11 @@ diff a/pc/sctp_data_channel.cc b/pc/sctp_data_channel.cc	(rejected hunks)
  }
  
  void SctpDataChannel::OnTransportChannelClosed(RTCError error) {
-@@ -771,7 +772,7 @@ void SctpDataChannel::CloseAbruptlyWithError(RTCError error) {
+   RTC_DCHECK_RUN_ON(network_thread_);
+   // The SctpTransport is unusable, which could come from multiple reasons:
+@@ -769,11 +770,11 @@ void SctpDataChannel::CloseAbruptlyWithError(RTCError error) {
+ 
+   if (state_ == kClosed) {
      return;
    }
  
@@ -62,3 +76,5 @@ diff a/pc/sctp_data_channel.cc b/pc/sctp_data_channel.cc	(rejected hunks)
  
    // Still go to "kClosing" before "kClosed", since observers may be expecting
    // that.
+   SetState(kClosing);
+   error_ = std::move(error);

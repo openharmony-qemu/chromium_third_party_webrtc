@@ -1,5 +1,7 @@
 diff a/pc/peer_connection_factory.cc b/pc/peer_connection_factory.cc	(rejected hunks)
-@@ -236,6 +236,12 @@ PeerConnectionFactory::CreatePeerConnectionOrError(
+@@ -234,10 +234,16 @@ PeerConnectionFactory::CreatePeerConnectionOrError(
+   if (!err.ok()) {
+     RTC_LOG(LS_ERROR) << "Invalid ICE configuration: " << err.message();
      return err;
    }
  
@@ -12,3 +14,5 @@ diff a/pc/peer_connection_factory.cc b/pc/peer_connection_factory.cc	(rejected h
    ServerAddresses stun_servers;
    std::vector<RelayServerConfig> turn_servers;
    err = ParseAndValidateIceServersFromConfiguration(configuration, stun_servers,
+                                                     turn_servers);
+   if (!err.ok()) {

@@ -1,5 +1,7 @@
 diff a/rtc_base/ref_counter.h b/rtc_base/ref_counter.h	(rejected hunks)
-@@ -13,21 +13,17 @@
+@@ -11,25 +11,21 @@
+ #define RTC_BASE_REF_COUNTER_H_
+ 
  #include <atomic>
  
  #include "api/ref_count.h"
@@ -24,3 +26,5 @@ diff a/rtc_base/ref_counter.h b/rtc_base/ref_counter.h	(rejected hunks)
  
    // Returns kDroppedLastRef if this call dropped the last reference; the caller
    // should therefore free the resource protected by the reference counter.
+   // Otherwise, returns kOtherRefsRemained (note that in case of multithreading,
+   // some other caller may have dropped the last reference by the time this call

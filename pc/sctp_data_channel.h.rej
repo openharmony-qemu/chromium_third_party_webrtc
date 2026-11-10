@@ -1,5 +1,7 @@
 diff a/pc/sctp_data_channel.h b/pc/sctp_data_channel.h	(rejected hunks)
-@@ -259,7 +259,7 @@ class SctpDataChannel : public DataChannelInterface {
+@@ -257,11 +257,11 @@ class SctpDataChannel : public DataChannelInterface {
+ 
+   bool SendControlMessage(const CopyOnWriteBuffer& buffer)
        RTC_RUN_ON(network_thread_);
  
    bool connected_to_transport() const RTC_RUN_ON(network_thread_) {
@@ -8,7 +10,11 @@ diff a/pc/sctp_data_channel.h b/pc/sctp_data_channel.h	(rejected hunks)
    }
    void MaybeSendOnBufferedAmountChanged() RTC_RUN_ON(network_thread_);
  
-@@ -291,9 +291,8 @@ class SctpDataChannel : public DataChannelInterface {
+   Thread* const signaling_thread_;
+   Thread* const network_thread_;
+@@ -289,13 +289,12 @@ class SctpDataChannel : public DataChannelInterface {
+       RTC_GUARDED_BY(network_thread_);
+   HandshakeState handshake_state_ RTC_GUARDED_BY(network_thread_) =
        kHandshakeInit;
    // Did we already start the graceful SCTP closing procedure?
    bool started_closing_procedure_ RTC_GUARDED_BY(network_thread_) = false;
@@ -19,3 +25,5 @@ diff a/pc/sctp_data_channel.h b/pc/sctp_data_channel.h	(rejected hunks)
  };
  
  }  // namespace webrtc
+ 
+ #endif  // PC_SCTP_DATA_CHANNEL_H_

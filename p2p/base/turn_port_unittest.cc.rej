@@ -1,5 +1,7 @@
 diff a/p2p/base/turn_port_unittest.cc b/p2p/base/turn_port_unittest.cc	(rejected hunks)
-@@ -1990,6 +1990,65 @@ class MessageObserver : public StunMessageObserver {
+@@ -1988,10 +1988,69 @@ class MessageObserver : public StunMessageObserver {
+ 
+   // Number of TurnMessages that had STUN_ATTR_COUNTER.
    unsigned int* attr_counter_ = nullptr;
  };
  
@@ -65,3 +67,5 @@ diff a/p2p/base/turn_port_unittest.cc b/p2p/base/turn_port_unittest.cc	(rejected
  // Do a TURN allocation, establish a TLS connection, and send some data.
  // Add customizer and check that it get called.
  TEST_F(TurnPortTest, TestTurnCustomizerCount) {
+   unsigned int observer_message_counter = 0;
+   unsigned int observer_channel_data_counter = 0;

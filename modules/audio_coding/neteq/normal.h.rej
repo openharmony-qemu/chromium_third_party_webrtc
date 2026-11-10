@@ -1,5 +1,7 @@
 diff a/modules/audio_coding/neteq/normal.h b/modules/audio_coding/neteq/normal.h	(rejected hunks)
-@@ -17,7 +17,6 @@
+@@ -15,11 +15,10 @@
+ #include <string.h>  // Access to size_t.
+ 
  #include "api/neteq/neteq.h"
  #include "modules/audio_coding/neteq/statistics_calculator.h"
  #include "rtc_base/checks.h"
@@ -7,7 +9,11 @@ diff a/modules/audio_coding/neteq/normal.h b/modules/audio_coding/neteq/normal.h
  
  namespace webrtc {
  
-@@ -42,8 +41,6 @@ class Normal {
+ // Forward declarations.
+ class AudioMultiVector;
+@@ -40,12 +39,10 @@ class Normal {
+       : fs_hz_(fs_hz),
+         decoder_database_(decoder_database),
          background_noise_(background_noise),
          expand_(expand),
          samples_per_ms_(CheckedDivExact(fs_hz_, 1000)),
@@ -16,7 +22,11 @@ diff a/modules/audio_coding/neteq/normal.h b/modules/audio_coding/neteq/normal.h
          statistics_(statistics) {}
  
    virtual ~Normal() {}
-@@ -68,7 +65,6 @@ class Normal {
+ 
+   Normal(const Normal&) = delete;
+@@ -66,11 +63,10 @@ class Normal {
+   int fs_hz_;
+   DecoderDatabase* decoder_database_;
    const BackgroundNoise& background_noise_;
    Expand* expand_;
    const size_t samples_per_ms_;
@@ -24,3 +34,5 @@ diff a/modules/audio_coding/neteq/normal.h b/modules/audio_coding/neteq/normal.h
    StatisticsCalculator* const statistics_;
  };
  
+ }  // namespace webrtc
+ #endif  // MODULES_AUDIO_CODING_NETEQ_NORMAL_H_

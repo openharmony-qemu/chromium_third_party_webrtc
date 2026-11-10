@@ -1,5 +1,7 @@
 diff a/media/engine/webrtc_voice_engine.cc b/media/engine/webrtc_voice_engine.cc	(rejected hunks)
-@@ -2655,9 +2655,14 @@ bool WebRtcVoiceReceiveChannel::MaybeCreateDefaultReceiveStream(
+@@ -2653,13 +2653,18 @@ bool WebRtcVoiceReceiveChannel::MaybeCreateDefaultReceiveStream(
+ 
+   // The default sink can only be attached to one stream at a time, so we hook
    // it up to the *latest* unsignaled stream we've seen, in order to support
    // the case where the SSRC of one unsignaled stream changes.
    if (default_sink_) {
@@ -17,7 +19,11 @@ diff a/media/engine/webrtc_voice_engine.cc b/media/engine/webrtc_voice_engine.cc
      }
      std::unique_ptr<AudioSinkInterface> proxy_sink(
          new ProxySink(default_sink_.get()));
-@@ -2864,7 +2869,22 @@ bool WebRtcVoiceReceiveChannel::MaybeDeregisterUnsignaledRecvStream(
+     SetRawAudioSink(ssrc, std::move(proxy_sink));
+   }
+@@ -2862,11 +2867,26 @@ bool WebRtcVoiceReceiveChannel::MaybeDeregisterUnsignaledRecvStream(
+ bool WebRtcVoiceReceiveChannel::MaybeDeregisterUnsignaledRecvStream(
+     uint32_t ssrc) {
    RTC_DCHECK_RUN_ON(worker_thread_);
    auto it = absl::c_find(unsignaled_recv_ssrcs_, ssrc);
    if (it != unsignaled_recv_ssrcs_.end()) {
@@ -40,3 +46,5 @@ diff a/media/engine/webrtc_voice_engine.cc b/media/engine/webrtc_voice_engine.cc
      return true;
    }
    return false;
+ }
+ }  // namespace webrtc
