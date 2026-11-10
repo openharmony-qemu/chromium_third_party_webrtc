@@ -1,5 +1,7 @@
 diff a/pc/legacy_stats_collector.h b/pc/legacy_stats_collector.h	(rejected hunks)
-@@ -110,6 +110,11 @@ class LegacyStatsCollector : public LegacyStatsCollectorInterface {
+@@ -108,10 +108,15 @@ class LegacyStatsCollector : public LegacyStatsCollectorInterface {
+   // stats have been made.
+   void InvalidateCache();
  
    bool UseStandardBytesStats() const { return use_standard_bytes_stats_; }
  
@@ -11,3 +13,5 @@ diff a/pc/legacy_stats_collector.h b/pc/legacy_stats_collector.h	(rejected hunks
   private:
    friend class LegacyStatsCollectorTest;
  
+   // Struct that's populated on the network thread and carries the values to
+   // the signaling thread where the stats are added to the stats reports.

@@ -1,5 +1,7 @@
 diff a/pc/peer_connection_integrationtest.cc b/pc/peer_connection_integrationtest.cc	(rejected hunks)
-@@ -30,6 +30,7 @@
+@@ -28,10 +28,11 @@
+ #include "absl/algorithm/container.h"
+ #include "absl/memory/memory.h"
  #include "absl/strings/string_view.h"
  #include "api/candidate.h"
  #include "api/crypto/crypto_options.h"
@@ -7,7 +9,11 @@ diff a/pc/peer_connection_integrationtest.cc b/pc/peer_connection_integrationtes
  #include "api/dtmf_sender_interface.h"
  #include "api/jsep.h"
  #include "api/make_ref_counted.h"
-@@ -89,6 +90,7 @@
+ #include "api/media_stream_interface.h"
+ #include "api/media_types.h"
+@@ -87,10 +88,11 @@
+ #include "rtc_base/ssl_identity.h"
+ #include "rtc_base/ssl_stream_adapter.h"
  #include "rtc_base/string_encode.h"
  #include "rtc_base/task_queue_for_test.h"
  #include "rtc_base/test_certificate_verifier.h"
@@ -15,7 +21,11 @@ diff a/pc/peer_connection_integrationtest.cc b/pc/peer_connection_integrationtes
  #include "rtc_base/virtual_socket_server.h"
  #include "system_wrappers/include/metrics.h"
  #include "test/gmock.h"
-@@ -113,6 +115,7 @@ using ::testing::NiceMock;
+ #include "test/gtest.h"
+ #include "test/wait_until.h"
+@@ -111,10 +113,11 @@ using ::testing::NiceMock;
+ using ::testing::MockFunction;
+ using ::testing::NiceMock;
  using ::testing::Not;
  using ::testing::NotNull;
  using ::testing::Return;
@@ -23,7 +33,11 @@ diff a/pc/peer_connection_integrationtest.cc b/pc/peer_connection_integrationtes
  using ::testing::WithParamInterface;
  
  class PeerConnectionIntegrationTest : public PeerConnectionIntegrationBaseTest,
-@@ -5121,6 +5124,230 @@ TEST_P(PeerConnectionIntegrationTest, PerPeerConnectionHeaderExtensions) {
+                                       public WithParamInterface<SdpSemantics> {
+  protected:
+@@ -5119,8 +5122,232 @@ TEST_P(PeerConnectionIntegrationTest, PerPeerConnectionHeaderExtensions) {
+                     ->rtp_header_extensions(),
+                 Not(Contains(Field(&RtpExtension::uri, uri))));
    }
  }
  

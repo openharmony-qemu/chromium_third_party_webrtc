@@ -1,5 +1,7 @@
 diff a/modules/video_coding/codecs/av1/dav1d_decoder.cc b/modules/video_coding/codecs/av1/dav1d_decoder.cc	(rejected hunks)
-@@ -82,9 +82,6 @@ class ScopedDav1dPicture : public RefCountedNonVirtual<ScopedDav1dPicture> {
+@@ -80,13 +80,10 @@ class ScopedDav1dPicture : public RefCountedNonVirtual<ScopedDav1dPicture> {
+   Dav1dPicture picture_ = {};
+ };
  
  constexpr char kDav1dName[] = "dav1d";
  
@@ -9,7 +11,11 @@ diff a/modules/video_coding/codecs/av1/dav1d_decoder.cc b/modules/video_coding/c
  Dav1dDecoder::Dav1dDecoder() = default;
  
  Dav1dDecoder::Dav1dDecoder(const Environment& env)
-@@ -142,9 +139,25 @@ int32_t Dav1dDecoder::Decode(const EncodedImage& encoded_image,
+     : crop_to_render_resolution_(env.field_trials().IsEnabled(
+           "WebRTC-Dav1dDecoder-CropToRenderResolution")) {}
+@@ -140,13 +137,29 @@ int32_t Dav1dDecoder::Decode(const EncodedImage& encoded_image,
+     return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
+   }
  
    ScopedDav1dData scoped_dav1d_data;
    Dav1dData& dav1d_data = scoped_dav1d_data.Data();
@@ -38,3 +44,5 @@ diff a/modules/video_coding/codecs/av1/dav1d_decoder.cc b/modules/video_coding/c
  
    if (int decode_res = dav1d_send_data(context_, &dav1d_data)) {
      RTC_LOG(LS_WARNING)
+         << "Dav1dDecoder::Decode decoding failed with error code "
+         << decode_res;

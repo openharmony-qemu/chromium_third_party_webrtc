@@ -1,5 +1,7 @@
 diff a/api/peer_connection_interface.h b/api/peer_connection_interface.h	(rejected hunks)
-@@ -416,6 +416,10 @@ class RTC_EXPORT PeerConnectionInterface : public RefCountInterface {
+@@ -414,10 +414,14 @@ class RTC_EXPORT PeerConnectionInterface : public RefCountInterface {
+     static const int kUndefined = -1;
+     // Default maximum number of packets in the audio jitter buffer.
      static const int kAudioJitterBufferMaxPackets = 200;
      // ICE connection receiving timeout for aggressive configuration.
      static const int kAggressiveIceConnectionReceivingTimeout = 1000;
@@ -10,3 +12,5 @@ diff a/api/peer_connection_interface.h b/api/peer_connection_interface.h	(reject
  
      ////////////////////////////////////////////////////////////////////////
      // The below few fields mirror the standard RTCConfiguration dictionary:
+     // https://w3c.github.io/webrtc-pc/#rtcconfiguration-dictionary
+     ////////////////////////////////////////////////////////////////////////

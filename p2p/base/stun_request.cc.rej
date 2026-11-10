@@ -1,5 +1,7 @@
 diff a/p2p/base/stun_request.cc b/p2p/base/stun_request.cc	(rejected hunks)
-@@ -32,6 +32,7 @@
+@@ -30,10 +30,11 @@
+ #include "api/units/timestamp.h"
+ #include "rtc_base/byte_buffer.h"
  #include "rtc_base/checks.h"
  #include "rtc_base/logging.h"
  #include "rtc_base/string_encode.h"
@@ -7,7 +9,11 @@ diff a/p2p/base/stun_request.cc b/p2p/base/stun_request.cc	(rejected hunks)
  
  namespace webrtc {
  
-@@ -122,8 +123,28 @@ bool StunRequestManager::CheckResponse(StunMessage* msg) {
+ // RFC 5389 says SHOULD be 500ms.
+ // For years, this was 100ms, but for networks that
+@@ -120,12 +121,32 @@ bool StunRequestManager::CheckResponse(StunMessage* msg) {
+   // And we suspect that for some tests, the message integrity is not set in the
+   // request. Complain, and then don't check.
    bool skip_integrity_checking =
        (request->msg()->integrity() == StunMessage::IntegrityStatus::kNotSet);
    if (!request->AuthenticationRequired()) {
@@ -38,3 +44,5 @@ diff a/p2p/base/stun_request.cc b/p2p/base/stun_request.cc	(rejected hunks)
    } else if (skip_integrity_checking) {
      // TODO(chromium:1177125): Remove below!
      // This indicates lazy test writing (not adding integrity attribute).
+     // Complain, but only in debug mode (while developing).
+     RTC_LOG(LS_ERROR)

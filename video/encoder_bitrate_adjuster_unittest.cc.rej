@@ -1,5 +1,7 @@
 diff a/video/encoder_bitrate_adjuster_unittest.cc b/video/encoder_bitrate_adjuster_unittest.cc	(rejected hunks)
-@@ -581,6 +581,40 @@ TEST_P(EncoderBitrateAdjusterTest, HonorsMinBitrateWithAv1) {
+@@ -579,10 +579,44 @@ TEST_P(EncoderBitrateAdjusterTest, HonorsMinBitrateWithAv1) {
+   // Adjusted allocation near input. Allow 1% error margin due to rounding
+   // errors etc.
    ExpectNear(expected_input_allocation, current_adjusted_allocation_, 0.01);
  }
  
@@ -40,3 +42,5 @@ diff a/video/encoder_bitrate_adjuster_unittest.cc b/video/encoder_bitrate_adjust
  INSTANTIATE_TEST_SUITE_P(
      AdjustWithHeadroomVariations,
      EncoderBitrateAdjusterTest,
+     Values("WebRTC-VideoRateControl/adjuster_use_headroom:false/",
+            "WebRTC-VideoRateControl/adjuster_use_headroom:true/",

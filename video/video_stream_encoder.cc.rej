@@ -1,5 +1,7 @@
 diff a/video/video_stream_encoder.cc b/video/video_stream_encoder.cc	(rejected hunks)
-@@ -1069,6 +1069,7 @@ void VideoStreamEncoder::ReconfigureEncoder() {
+@@ -1067,10 +1067,11 @@ void VideoStreamEncoder::ReconfigureEncoder() {
+   bool encoder_reset_required = false;
+   if (pending_encoder_creation_) {
      // Destroy existing encoder instance before creating a new one. Otherwise
      // attempt to create another instance will fail if encoder factory
      // supports only single instance of encoder of given type.
@@ -7,3 +9,5 @@ diff a/video/video_stream_encoder.cc b/video/video_stream_encoder.cc	(rejected h
      encoder_.reset();
  
      encoder_ = MaybeCreateFrameDumpingEncoderWrapper(
+         env_,
+         settings_.encoder_factory->Create(env_, encoder_config_.video_format));
