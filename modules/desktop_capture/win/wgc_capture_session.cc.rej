@@ -1,23 +1,4 @@
 diff a/modules/desktop_capture/win/wgc_capture_session.cc b/modules/desktop_capture/win/wgc_capture_session.cc	(rejected hunks)
-@@ -515,18 +515,10 @@ HRESULT WgcCaptureSession::ProcessFrame() {
-   if (FAILED(hr)) {
-     RecordGetFrameResult(GetFrameResult::kTexture2dCastFailed);
-     return hr;
-   }
- 
--  if (!mapped_texture_) {
--    hr = CreateMappedTexture(texture_2D);
--    if (FAILED(hr)) {
--      RecordGetFrameResult(GetFrameResult::kCreateMappedTextureFailed);
--      return hr;
--    }
--  }
--
-   // We need to copy `texture_2D` into `mapped_texture_` as the latter has the
-   // D3D11_CPU_ACCESS_READ flag set, which lets us access the image data.
-   // Otherwise it would only be readable by the GPU.
-   ComPtr<ID3D11DeviceContext> d3d_context;
-   d3d11_device_->GetImmediateContext(&d3d_context);
 @@ -539,21 +531,31 @@ HRESULT WgcCaptureSession::ProcessFrame() {
    }
  
