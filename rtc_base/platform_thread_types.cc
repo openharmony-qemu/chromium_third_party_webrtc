@@ -52,6 +52,8 @@ PlatformThreadId CurrentThreadId() {
   return pthread_mach_thread_np(pthread_self());
 #elif defined(WEBRTC_ANDROID)
   return gettid();
+#elif defined(OS_OHOS)
+  return gettid();
 #elif defined(WEBRTC_FUCHSIA)
   return zx_thread_self();
 #elif defined(WEBRTC_LINUX)
